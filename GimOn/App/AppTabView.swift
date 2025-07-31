@@ -45,9 +45,3 @@ struct GameListView: View {
         Text("GameListView")
     }
 }
-
-struct ProfileView: View {
-    var body: some View {
-        Text("ProfileView")
-    }
-}
