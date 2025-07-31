@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EF28796F2E3BB38700D257DA /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = EF28796E2E3BB38700D257DA /* .swiftlint.yml */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		EF28796E2E3BB38700D257DA /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		EFF189492E3BA345008C8F34 /* GimOn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GimOn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -45,6 +50,7 @@
 		EFF189402E3BA345008C8F34 = {
 			isa = PBXGroup;
 			children = (
+				EF28796E2E3BB38700D257DA /* .swiftlint.yml */,
 				EFF1894B2E3BA345008C8F34 /* GimOn */,
 				EFF1894A2E3BA345008C8F34 /* Products */,
 			);
@@ -68,6 +74,7 @@
 				EFF189452E3BA345008C8F34 /* Sources */,
 				EFF189462E3BA345008C8F34 /* Frameworks */,
 				EFF189472E3BA345008C8F34 /* Resources */,
+				EF3078012E3BBC1500158C2D /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -122,10 +129,34 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF28796F2E3BB38700D257DA /* .swiftlint.yml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		EF3078012E3BBC1500158C2D /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/swiftlint.log",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint > /dev/null; then\n  swiftlint --config \"${PROJECT_DIR}/.swiftlint.yml\"\nelse\n  echo \"warning: SwiftLint not installed\"\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		EFF189452E3BA345008C8F34 /* Sources */ = {
@@ -266,6 +297,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"GimOn/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GimOn/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -295,6 +327,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"GimOn/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GimOn/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
