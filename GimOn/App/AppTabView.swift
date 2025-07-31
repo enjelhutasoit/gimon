@@ -1,0 +1,59 @@
+//
+//  AppTabView.swift
+//  GimOn
+//
+//  Created by Enjel Hutasoit on 31/07/25.
+//
+
+import SwiftUI
+
+struct AppTabView: View {
+    var body: some View {
+        TabView {
+            Group {
+                NavigationStack {
+                    GameListView()
+                }
+                .tabItem {
+                    Label("Home", systemImage: "house.fill")
+                }
+                
+                NavigationStack {
+                    SearchView()
+                }
+                .tabItem {
+                    Label("Search", systemImage: "magnifyingglass")
+                }
+                
+                NavigationStack {
+                    ProfileView()
+                }
+                .tabItem {
+                    Label("Profil", systemImage: "person.crop.circle.fill")
+                        .tint(AppColors.primaryColor)
+                }
+            }
+            .toolbarBackground(.black, for: .tabBar)
+            .toolbarBackground(.visible, for: .tabBar)
+            .toolbarColorScheme(.dark, for: .tabBar)
+        }
+    }
+}
+
+struct GameListView: View {
+    var body: some View {
+        Text("GameListView")
+    }
+}
+
+struct SearchView: View {
+    var body: some View {
+        Text("SearchView")
+    }
+}
+
+struct ProfileView: View {
+    var body: some View {
+        Text("ProfileView")
+    }
+}
