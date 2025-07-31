@@ -5,7 +5,13 @@
 //  Created by Enjel Hutasoit on 31/07/25.
 //
 
-import Foundation
+import SwiftUI
+
+struct AppColors {
+    static let primaryColor = Color(hex: "#FFD700")
+    static let accentColor = Color(hex: "#C0C0C0")
+    static let primaryTextColor = Color(hex: "#E0E0E0")
+}
 
 struct AppFonts {
     static let light = "Outfit-Light"
