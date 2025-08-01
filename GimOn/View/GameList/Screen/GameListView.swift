@@ -34,6 +34,9 @@ struct GameListView: View {
                 }
             }
             .background(.black)
+            .navigationDestination(item: $selectedItem) { game in
+                GameDetailView(id: game.id)
+            }
             .task {
                 await getListGame()
             }
@@ -49,7 +52,9 @@ extension GameListView {
                     GameItemView(
                         game: game,
                         posterSize: CGSize(width: itemWidth, height: itemHeight)
-                    )
+                    ) {
+                        selectedItem = game
+                    }
                     .padding(.top, 18)
                     .padding(.horizontal, 2)
                 }
