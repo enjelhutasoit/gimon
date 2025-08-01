@@ -34,6 +34,11 @@
 			path = GimOn;
 			sourceTree = "<group>";
 		};
+		EFFF872E2E3BC7650028652F /* NetworkSource */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NetworkSource;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +55,7 @@
 		EFF189402E3BA345008C8F34 = {
 			isa = PBXGroup;
 			children = (
+				EFFF872E2E3BC7650028652F /* NetworkSource */,
 				EF28796E2E3BB38700D257DA /* .swiftlint.yml */,
 				EFF1894B2E3BA345008C8F34 /* GimOn */,
 				EFF1894A2E3BA345008C8F34 /* Products */,
@@ -82,6 +88,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				EFF1894B2E3BA345008C8F34 /* GimOn */,
+				EFFF872E2E3BC7650028652F /* NetworkSource */,
 			);
 			name = GimOn;
 			packageProductDependencies = (

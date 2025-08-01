@@ -39,9 +39,3 @@ struct AppTabView: View {
         }
     }
 }
-
-struct GameListView: View {
-    var body: some View {
-        Text("GameListView")
-    }
-}
