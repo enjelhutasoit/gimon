@@ -13,20 +13,20 @@ struct ProfileView: View {
             VStack {
                 HStack(alignment: .center, spacing: 12) {
                     PhotoProfile(
-                        image: Image(User.photo),
+                        image: Image(DefaultUser.photo),
                         size: CGSize(width: 100, height: 100),
                         borderWidth: 3
                     )
                     
                     UserBioView(
-                        name: User.fullName,
-                        username: User.username,
-                        bio: User.bio
+                        name: DefaultUser.fullName,
+                        username: DefaultUser.username,
+                        bio: DefaultUser.bio
                     )
                 }
                 
-                BorderedButton(User.web, fixedWidth: false) {
-                    openURLInBrowser(User.webURL)
+                BorderedButton(DefaultUser.web, fixedWidth: false) {
+                    openURLInBrowser(DefaultUser.webURL)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.top)

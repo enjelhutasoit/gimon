@@ -14,9 +14,9 @@ struct UserBioView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            makeName(name: User.fullName, font: .custom(AppFonts.bold, size: 18))
-            makeName(name: User.username, font: .custom(AppFonts.light, size: 16))
-            makeBio(with: User.bio)
+            makeName(name: DefaultUser.fullName, font: .custom(AppFonts.bold, size: 18))
+            makeName(name: DefaultUser.username, font: .custom(AppFonts.light, size: 16))
+            makeBio(with: DefaultUser.bio)
                 .padding(.top, 12)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
