@@ -19,10 +19,10 @@ struct AppTabView: View {
                 }
                 
                 NavigationStack {
-                    SearchView()
+                    FavoritesGameView()
                 }
                 .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
+                    Label("Favorite", systemImage: "heart")
                 }
                 
                 NavigationStack {
