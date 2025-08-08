@@ -12,6 +12,7 @@ struct GameDetailView: View {
     @State private var errorMessage: String?
     @State private var game: GameDetail?
     @State private var isDescriptionExpanded: Bool = false
+    @State private var isFavorite: Bool = false
     @State private var isLoading: Bool = false
     @Environment(\.dismiss) private var dismiss
     
@@ -73,6 +74,8 @@ extension GameDetailView {
             VStack(alignment: .leading, spacing: 21) {
                 SharpEdgeDivider()
                 
+                favoriteButton
+                
                 GameMetadataView(
                     esrb: game?.esrbRating ?? "",
                     metacritic: "\(game?.metacritic ?? 0)",
@@ -107,6 +110,13 @@ extension GameDetailView {
             }
             .padding(.horizontal)
         }
+    }
+    
+    private var favoriteButton: some View {
+        FavoriteButton(isSelected: $isFavorite) {
+            isFavorite.toggle()
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 }
 
