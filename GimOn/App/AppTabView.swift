@@ -34,8 +34,6 @@ struct AppTabView: View {
                 }
             }
             .toolbarBackground(.black, for: .tabBar)
-            .toolbarBackground(.visible, for: .tabBar)
-            .toolbarColorScheme(.dark, for: .tabBar)
         }
     }
 }
