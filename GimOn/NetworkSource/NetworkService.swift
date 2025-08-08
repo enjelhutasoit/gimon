@@ -110,6 +110,7 @@ extension NetworkService {
             developers: input.developers?.compactMap { $0.name } ?? [],
             esrbRating: input.esrbRating.map { $0.name ?? "" } ?? "",
             genres: input.genres?.compactMap { $0.name } ?? [],
+            id: input.id,
             metacritic: input.metacritic ?? 0,
             metacriticURL: URL(string: input.metacriticURL ?? ""),
             name: input.name ?? "",
