@@ -81,7 +81,7 @@ extension GameDetailView {
                 )
                 
                 PlatformsDetailView(
-                    title: "PlatformView",
+                    title: "Platforms",
                     platforms: game?.parentPlatforms ?? []
                 )
                 
