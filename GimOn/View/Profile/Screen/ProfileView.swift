@@ -8,6 +8,11 @@
 import SwiftUI
 
 struct ProfileView: View {
+    
+    @AppStorage(ProfileStore.nameKey) var name = ProfileStore.shared.name
+    @AppStorage(ProfileStore.usernameKey) var username = ProfileStore.shared.username
+    @AppStorage(ProfileStore.bioKey) var bio = ProfileStore.shared.bio
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -19,9 +24,9 @@ struct ProfileView: View {
                     )
                     
                     UserBioView(
-                        name: DefaultUser.fullName,
-                        username: DefaultUser.username,
-                        bio: DefaultUser.bio
+                        name: name,
+                        username: username,
+                        bio: bio
                     )
                 }
                 
