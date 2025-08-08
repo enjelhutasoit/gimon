@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @State private var openEditorView: Bool = false
     
     @AppStorage(ProfileStore.nameKey) var name = ProfileStore.shared.name
     @AppStorage(ProfileStore.usernameKey) var username = ProfileStore.shared.username
@@ -30,14 +31,22 @@ struct ProfileView: View {
                     )
                 }
                 
-                BorderedButton(DefaultUser.web, fixedWidth: false) {
-                    openURLInBrowser(DefaultUser.webURL)
+                HStack(alignment: .center, spacing: 12) {
+                    BorderedButton("Edit Profile", fixedWidth: false) {
+                        openEditorView.toggle()
+                    }
+                    
+                    BorderedButton(DefaultUser.web, fixedWidth: false) {
+                        openURLInBrowser(DefaultUser.webURL)
+                    }
                 }
-                .frame(maxWidth: .infinity)
                 .padding(.top)
             }
+            .padding(.horizontal)
         }
-        .padding(.horizontal)
+        .navigationDestination(isPresented: $openEditorView) {
+            EditProfileView()
+        }
         .background(.black)
     }
 }
