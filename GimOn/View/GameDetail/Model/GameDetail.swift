@@ -14,6 +14,7 @@ struct GameDetail {
     let developers: [String]
     let esrbRating: String
     let genres: [String]
+    let id: Int
     let metacritic: Int
     let metacriticURL: URL?
     let name: String
@@ -34,6 +35,7 @@ struct GameDetail {
         developers: [String],
         esrbRating: String,
         genres: [String],
+        id: Int,
         metacritic: Int,
         metacriticURL: URL?,
         name: String,
@@ -53,6 +55,7 @@ struct GameDetail {
         self.developers = developers
         self.esrbRating = esrbRating
         self.genres = genres
+        self.id = id
         self.metacritic = metacritic
         self.metacriticURL = metacriticURL
         self.name = name

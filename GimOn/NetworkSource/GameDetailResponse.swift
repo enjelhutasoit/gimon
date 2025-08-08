@@ -15,6 +15,7 @@ struct GameDetailResponse: Decodable {
     let developers: [Developer]?
     let esrbRating: ESRB?
     let genres: [Genre]?
+    let id: Int
     let metacritic: Int?
     let metacriticURL: String?
     let name: String?
@@ -35,6 +36,7 @@ struct GameDetailResponse: Decodable {
         case developers
         case esrbRating = "esrb_rating"
         case genres
+        case id
         case metacritic
         case metacriticURL = "metacritic_url"
         case name
