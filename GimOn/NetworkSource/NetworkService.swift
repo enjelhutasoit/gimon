@@ -40,20 +40,28 @@ class NetworkService {
         }
     }
     
-    func getGame(id: Int) async throws -> GameDetail {
+    func getGame(id: Int) async -> Result<GameDetail, NetworkError> {
+        if apiKey.isEmpty {
+            return .failure(.missingApiKey)
+        }
+        
         var components = URLComponents(string: "https://api.rawg.io/api/games/\(id)")!
         components.queryItems = [
             URLQueryItem(name: "key", value: apiKey)
         ]
         let request = URLRequest(url: components.url!)
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-            fatalError("Error: Can't fetching detail.")
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+                return .failure(.invalidResponse)
+            }
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(GameDetailResponse.self, from: data)
+            return .success(gameDetailMapper(input: result))
+        } catch {
+            return .failure(.networkFailure)
         }
-        
-        let decoder = JSONDecoder()
-        let result = try decoder.decode(GameDetailResponse.self, from: data)
-        return gameDetailMapper(input: result)
     }
 }
 

@@ -114,11 +114,16 @@ extension GameDetailView {
     private func getDetail(id: Int) async {
         isLoading = true
         let networkService = NetworkService()
-        do {
-            self.game = try await networkService.getGame(id: id)
-        } catch {
-            errorMessage = "An unexpected error occurred. Please try again."
+        let result = await networkService.getGame(id: id)
+        
+        switch result {
+        case .success(let fetchedGame):
+            game = fetchedGame
+            errorMessage = nil
+        case .failure(let error):
+            errorMessage = error.description
         }
+        
         isLoading = false
     }
 }
