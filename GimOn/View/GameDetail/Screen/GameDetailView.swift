@@ -41,7 +41,7 @@ struct GameDetailView: View {
         .toolbarBackground(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .topBarLeading) {
                 BackArrowButton { dismiss() }
             }
         }
@@ -55,58 +55,19 @@ extension GameDetailView {
     private func loadedView(geoProxy: GeometryProxy) -> some View {
         ScrollView {
             ZStack(alignment: .bottom) {
-                GamePosterDetailView(
-                    posterURL: game?.backgroundImage,
-                    height: geoProxy.size.height / 2,
-                    width: geoProxy.size.width
-                )
-                
-                GameHighlightView(
-                    title: game?.name ?? "",
-                    genres: game?.genres ?? [],
-                    rating: game?.rating ?? "",
-                    ratingCount: game?.ratingCount ?? ""
-                )
-                .padding(.bottom)
-                .padding(.horizontal)
+                posterView(geoProxy)
+                highlighView
             }
             
             VStack(alignment: .leading, spacing: 21) {
                 SharpEdgeDivider()
-                
                 favoriteButton
-                
-                GameMetadataView(
-                    esrb: game?.esrbRating ?? "",
-                    metacritic: "\(game?.metacritic ?? 0)",
-                    playtime: game?.playtime ?? "",
-                    released: game?.released ?? ""
-                )
-                
-                PlatformsDetailView(
-                    title: "Platforms",
-                    platforms: game?.parentPlatforms ?? []
-                )
-                
-                DescriptionView(
-                    title: "Description",
-                    description: game?.description ?? "",
-                    isDescriptionExpanded: $isDescriptionExpanded
-                )
-                
-                StoreAndExploreMore(
-                    stores: game?.stores ?? [],
-                    website: game?.website,
-                    reddit: game?.redditURL,
-                    metacritic: game?.metacriticURL
-                )
-                
-                DevelopersAndAlternativeNamesView(
-                    developers: game?.developers ?? [],
-                    alternativeNames: game?.alternativeNames ?? []
-                )
-                
-                RowView("Tags", values: game?.tags ?? [])
+                metaDataView
+                platformView
+                descriptionView
+                storeAndExploreMoreView
+                developersAndAlternativeNamesView
+                tagsView
             }
             .padding(.horizontal)
         }
@@ -118,6 +79,70 @@ extension GameDetailView {
         }
         .frame(maxWidth: .infinity, alignment: .center)
     }
+    
+    private func posterView(_ geoProxy: GeometryProxy) -> some View {
+        GamePosterDetailView(
+            posterURL: game?.backgroundImage,
+            height: geoProxy.size.height / 2,
+            width: geoProxy.size.width
+        )
+    }
+    
+    private var highlighView: some View {
+        GameHighlightView(
+            title: game?.name ?? "",
+            genres: game?.genres ?? [],
+            rating: game?.rating ?? "",
+            ratingCount: game?.ratingCount ?? ""
+        )
+        .padding(.bottom)
+        .padding(.horizontal)
+    }
+
+    private var metaDataView: some View {
+        GameMetadataView(
+            esrb: game?.esrbRating ?? "",
+            metacritic: "\(game?.metacritic ?? 0)",
+            playtime: game?.playtime ?? "",
+            released: game?.released ?? ""
+        )
+    }
+    
+    private var platformView: some View {
+        PlatformsDetailView(
+            title: "Platforms",
+            platforms: game?.parentPlatforms ?? []
+        )
+    }
+    
+    private var descriptionView: some View {
+        DescriptionView(
+            title: "Description",
+            description: game?.description ?? "",
+            isDescriptionExpanded: $isDescriptionExpanded
+        )
+    }
+    
+    private var storeAndExploreMoreView: some View {
+        StoreAndExploreMore(
+            stores: game?.stores ?? [],
+            website: game?.website,
+            reddit: game?.redditURL,
+            metacritic: game?.metacriticURL
+        )
+    }
+    
+    private var developersAndAlternativeNamesView: some View {
+        DevelopersAndAlternativeNamesView(
+            developers: game?.developers ?? [],
+            alternativeNames: game?.alternativeNames ?? []
+        )
+    }
+    
+    private var tagsView: some View {
+        RowView("Tags", values: game?.tags ?? [])
+    }
+
 }
 
 extension GameDetailView {
