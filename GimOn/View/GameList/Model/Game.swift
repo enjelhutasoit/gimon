@@ -40,3 +40,41 @@ struct Game: Identifiable, Hashable {
         self.released = formatYear(from: released)
     }
 }
+
+extension Game {
+    init(
+        backgroundImage: URL,
+        genres: [String],
+        id: Int,
+        name: String,
+        parentPlatfroms: [String],
+        formattedPlaytime: String,
+        formattedRating: String,
+        formattedRatingCount: String,
+        formattedReleased: String
+    ) {
+        self.backgroundImage = backgroundImage
+        self.genres = genres
+        self.id = id
+        self.name = name
+        self.parentPlatforms = parentPlatfroms
+        self.playtime = formattedPlaytime
+        self.rating = formattedRating
+        self.ratingCount = formattedRatingCount
+        self.released = formattedReleased
+    }
+
+    init(from favorite: FavoriteGame) {
+        self.init(
+            backgroundImage: URL(string: favorite.backgroundImage ?? "") ?? URL(string: "")!,
+            genres: favorite.genres ?? [],
+            id: Int(favorite.id),
+            name: favorite.name ?? "",
+            parentPlatfroms: favorite.parentPlatforms ?? [],
+            formattedPlaytime: favorite.playtime ?? "",
+            formattedRating: favorite.rating ?? "",
+            formattedRatingCount: favorite.ratingCount ?? "",
+            formattedReleased: formatYear(from: favorite.released ?? "", inputDateFormat: "dd MMM yyy")
+        )
+    }
+}
