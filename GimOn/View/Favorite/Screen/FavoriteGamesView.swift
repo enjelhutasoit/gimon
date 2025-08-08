@@ -12,17 +12,16 @@ struct FavoritesGameView: View {
     private let itemWidth = 143.0
     @State private var errorMessage: String?
     @State private var games: [Game] = []
-    @State private var isLoading: Bool = false
     @State private var selectedItem: Game?
+    
+    @EnvironmentObject var coreDataManager: CoreDataManager
 
     var body: some View {
         Group {
             if let errorMessage {
                 ErrorView(
                     message: errorMessage,
-                    retryAction: {
-                        Task { await getListGame() }
-                    }
+                    retryAction: { getListGame() }
                 )
             } else {
                 if games.count > 0 {
@@ -36,8 +35,8 @@ struct FavoritesGameView: View {
         .navigationDestination(item: $selectedItem) { game in
             GameDetailView(id: game.id)
         }
-        .task {
-            await getListGame()
+        .onAppear {
+            getListGame()
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -71,21 +70,13 @@ extension FavoritesGameView {
 }
 
 extension FavoritesGameView {
-    private func getListGame() async {
-        isLoading = true
-        errorMessage = nil
-        let networkService = NetworkService()
-        let result = await networkService.getGames()
-        
+    private func getListGame() {
+        let result = coreDataManager.fetchFavorites()
         switch result {
-        case .success(let fetchesGames):
-            games = fetchesGames
-            errorMessage = nil
+        case .success(let favorites):
+            games = favorites.map { Game(from: $0) }
         case .failure(let error):
-            errorMessage = error.description
+            errorMessage = "Failed to load favorites: \(error.localizedDescription)"
         }
-        
-        isLoading = false
     }
-
 }

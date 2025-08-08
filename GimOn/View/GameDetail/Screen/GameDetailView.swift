@@ -16,6 +16,8 @@ struct GameDetailView: View {
     @State private var isLoading: Bool = false
     @Environment(\.dismiss) private var dismiss
     
+    @EnvironmentObject var coreDataManager: CoreDataManager
+    
     init(id: Int) {
         self.id = id
     }
@@ -75,7 +77,7 @@ extension GameDetailView {
     
     private var favoriteButton: some View {
         FavoriteButton(isSelected: $isFavorite) {
-            isFavorite.toggle()
+            toggleFavorite()
         }
         .frame(maxWidth: .infinity, alignment: .center)
     }
@@ -148,17 +150,34 @@ extension GameDetailView {
 extension GameDetailView {
     private func getDetail(id: Int) async {
         isLoading = true
-        let networkService = NetworkService()
-        let result = await networkService.getGame(id: id)
+        defer { isLoading = false }
         
+        let result = await NetworkService().getGame(id: id)
         switch result {
         case .success(let fetchedGame):
-            game = fetchedGame
-            errorMessage = nil
+            await MainActor.run {
+                self.game = fetchedGame
+                self.isFavorite = coreDataManager.favoriteGames.contains { $0.id == fetchedGame.id }
+                self.errorMessage = nil
+            }
+            
         case .failure(let error):
-            errorMessage = error.description
+            await MainActor.run {
+                self.errorMessage = error.description
+            }
         }
-        
-        isLoading = false
+    }
+    
+    private func toggleFavorite() {
+        if isFavorite {
+            if let game {
+                coreDataManager.removeFavorite(game)
+            }
+        } else {
+            if let game {
+                coreDataManager.addFavorite(game)
+            }
+        }
+        isFavorite.toggle()
     }
 }
