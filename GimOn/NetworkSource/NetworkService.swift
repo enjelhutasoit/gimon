@@ -8,8 +8,22 @@
 import Foundation
 
 class NetworkService {
+    private let apiFileName = "RAWG-Info"
+    private let apiFileType = "plist"
+    private let apiKeyConfigKey = "API_KEY"
     
-    let apiKey = Constants.apiKey
+    private var apiKey: String {
+        guard let plist = NSDictionary(contentsOfFile: Bundle.main.path(forResource: apiFileName, ofType: apiFileType) ?? "") else {
+            fatalError("Couldn't find or load '\(apiFileName).\(apiFileType)'.")
+        }
+        
+        guard let value = plist[apiKeyConfigKey] as? String else {
+            fatalError("Missing '\(apiKeyConfigKey)' in '\(apiFileName).\(apiFileType)'.")
+        }
+        
+        return value
+    }
+    
     let pageSize = "35"
     
     func getGames() async -> Result<[Game], NetworkError> {
