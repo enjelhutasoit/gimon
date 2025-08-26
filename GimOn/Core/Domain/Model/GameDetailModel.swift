@@ -13,6 +13,7 @@ struct GameDetailModel {
     let description: String
     let developers: [String]
     let esrbRating: String
+    var favorite: Bool
     let genres: [String]
     let id: Int
     let metacritic: Int
@@ -34,6 +35,7 @@ struct GameDetailModel {
         description: String,
         developers: [String],
         esrbRating: String,
+        favorite: Bool,
         genres: [String],
         id: Int,
         metacritic: Int,
@@ -54,6 +56,7 @@ struct GameDetailModel {
         self.description = description
         self.developers = developers
         self.esrbRating = esrbRating
+        self.favorite = favorite
         self.genres = genres
         self.id = id
         self.metacritic = metacritic
@@ -65,6 +68,52 @@ struct GameDetailModel {
         self.ratingCount = formatRatingCount(ratingsCount)
         self.redditURL = redditURL
         self.released = formatYear(from: released, to: "dd MMM yyyy")
+        self.stores = stores
+        self.tags = tags
+        self.website = website
+    }
+}
+
+extension GameDetailModel {
+    init(
+        alternativeNames: [String],
+        backgroundImage: URL?,
+        description: String,
+        developers: [String],
+        esrbRating: String,
+        favorite: Bool,
+        genres: [String],
+        id: Int,
+        metacritic: Int,
+        metacriticURL: URL?,
+        name: String,
+        parentPlatforms: [PlatformModel],
+        playtimeFormatted: String,
+        ratingFormatted: String,
+        ratingsCountFormatted: String,
+        redditURL: URL?,
+        releasedFormatted: String,
+        stores: [StoreModel]?,
+        tags: [String],
+        website: URL?
+    ) {
+        self.alternativeNames = alternativeNames
+        self.backgroundImage = backgroundImage
+        self.description = description
+        self.developers = developers
+        self.esrbRating = esrbRating
+        self.favorite = favorite
+        self.genres = genres
+        self.id = id
+        self.metacritic = metacritic
+        self.metacriticURL = metacriticURL
+        self.name = name
+        self.parentPlatforms = parentPlatforms
+        self.playtime = playtimeFormatted
+        self.rating = ratingFormatted
+        self.ratingCount = ratingsCountFormatted
+        self.redditURL = redditURL
+        self.released = releasedFormatted
         self.stores = stores
         self.tags = tags
         self.website = website
