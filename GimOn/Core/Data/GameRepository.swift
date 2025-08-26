@@ -11,6 +11,8 @@ import Foundation
 protocol GameRepositoryProtocol {
     func getGameList() -> AnyPublisher<[GameModel], Error>
     func getGameDetail(for id: Int) -> AnyPublisher<GameDetailModel, Error>
+    func getFavoriteList() -> AnyPublisher<[GameModel], Error>
+    func updateFavoriteDetail(for id: Int) -> AnyPublisher<GameDetailModel, Error>
 }
 
 final class GameRepository: NSObject {
@@ -71,6 +73,20 @@ extension GameRepository: GameRepositoryProtocol {
                     }
                     .eraseToAnyPublisher()
             }
+            .map { GameMapper.mapGameDetailEntityToDomainModel($0) }
+            .eraseToAnyPublisher()
+    }
+    
+    func getFavoriteList() -> AnyPublisher<[GameModel], Error> {
+        local
+            .getFavoriteList()
+            .map { GameMapper.mapGameEntitiesToDomainModels($0)  }
+            .eraseToAnyPublisher()
+    }
+    
+    func updateFavoriteDetail(for id: Int) -> AnyPublisher<GameDetailModel, Error> {
+        local
+            .updateFavorite(of: id)
             .map { GameMapper.mapGameDetailEntityToDomainModel($0) }
             .eraseToAnyPublisher()
     }
