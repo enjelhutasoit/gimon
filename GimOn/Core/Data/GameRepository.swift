@@ -9,6 +9,7 @@ import Foundation
 
 protocol GameRepositoryProtocol {
     func getGameList(result: @escaping (Result<[GameModel], Error>) -> Void)
+    func getGameDetail(for id: Int, result: @escaping (Result<GameDetailModel, Error>) -> Void)
 }
 
 final class GameRepository: NSObject {
@@ -32,6 +33,18 @@ extension GameRepository: GameRepositoryProtocol {
             case .success(let gameListResponse):
                 let gameListModel = GameMapper.gameMapper(input: gameListResponse)
                 result(.success(gameListModel))
+            case .failure(let error):
+                result(.failure(error))
+            }
+        }
+    }
+    
+    func getGameDetail(for id: Int, result: @escaping (Result<GameDetailModel, any Error>) -> Void) {
+        remote.getGameDetail(for: id) { remoteResponse in
+            switch remoteResponse {
+            case .success(let gameDetailResponse):
+                let gameDetailModel = GameMapper.gameDetailMapper(input: gameDetailResponse)
+                result(.success(gameDetailModel))
             case .failure(let error):
                 result(.failure(error))
             }

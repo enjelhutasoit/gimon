@@ -17,4 +17,9 @@ final class Injection: NSObject {
     func provideGameListUseCase() -> GameListUseCase {
         GameListInteractor(repository: provideRepository())
     }
+    
+    func provideGameDetailUseCase() -> GameDetailUseCase {
+        let repository = provideRepository()
+        return GameDetailInteractor(repository: repository)
+    }
 }

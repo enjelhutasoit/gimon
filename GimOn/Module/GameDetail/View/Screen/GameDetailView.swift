@@ -8,29 +8,23 @@
 import SwiftUI
 
 struct GameDetailView: View {
-    private let id: Int
-    @State private var errorMessage: String?
-    @State private var game: GameDetailModel?
     @State private var isDescriptionExpanded: Bool = false
     @State private var isFavorite: Bool = false
     @State private var isLoading: Bool = false
     @Environment(\.dismiss) private var dismiss
     
     @EnvironmentObject var coreDataManager: CoreDataManager
-    
-    init(id: Int) {
-        self.id = id
-    }
+    @ObservedObject var presenter: GameDetailPresenter
     
     var body: some View {
         GeometryReader { geoProxy in
-            if isLoading {
+            if presenter.isLoading {
                 LoadingView()
-            } else if let errorMessage {
+            } else if !presenter.errorMessage.isEmpty {
                 ErrorView(
-                    message: errorMessage,
+                    message: presenter.errorMessage,
                     retryAction: {
-                        Task { await getDetail(id: id) }
+                        getGameDetail()
                     }
                 )
             } else {
@@ -47,8 +41,8 @@ struct GameDetailView: View {
                 BackArrowButton { dismiss() }
             }
         }
-        .task {
-            await getDetail(id: id)
+        .onAppear {
+            getGameDetail()
         }
     }
 }
@@ -84,7 +78,7 @@ extension GameDetailView {
     
     private func posterView(_ geoProxy: GeometryProxy) -> some View {
         GamePosterDetailView(
-            posterURL: game?.backgroundImage,
+            posterURL: presenter.gameDetail?.backgroundImage,
             height: geoProxy.size.height / 2,
             width: geoProxy.size.width
         )
@@ -92,10 +86,10 @@ extension GameDetailView {
     
     private var highlighView: some View {
         GameHighlightView(
-            title: game?.name ?? "",
-            genres: game?.genres ?? [],
-            rating: game?.rating ?? "",
-            ratingCount: game?.ratingCount ?? ""
+            title: presenter.gameDetail?.name ?? "",
+            genres: presenter.gameDetail?.genres ?? [],
+            rating: presenter.gameDetail?.rating ?? "",
+            ratingCount: presenter.gameDetail?.ratingCount ?? ""
         )
         .padding(.bottom)
         .padding(.horizontal)
@@ -103,78 +97,65 @@ extension GameDetailView {
 
     private var metaDataView: some View {
         GameMetadataView(
-            esrb: game?.esrbRating ?? "",
-            metacritic: "\(game?.metacritic ?? 0)",
-            playtime: game?.playtime ?? "",
-            released: game?.released ?? ""
+            esrb: presenter.gameDetail?.esrbRating ?? "",
+            metacritic: "\(presenter.gameDetail?.metacritic ?? 0)",
+            playtime: presenter.gameDetail?.playtime ?? "",
+            released: presenter.gameDetail?.released ?? ""
         )
     }
     
     private var platformView: some View {
         PlatformsDetailView(
             title: "Platforms",
-            platforms: game?.parentPlatforms ?? []
+            platforms: presenter.gameDetail?.parentPlatforms ?? []
         )
     }
     
     private var descriptionView: some View {
         DescriptionView(
             title: "Description",
-            description: game?.description ?? "",
+            description: presenter.gameDetail?.description ?? "",
             isDescriptionExpanded: $isDescriptionExpanded
         )
     }
     
     private var storeAndExploreMoreView: some View {
         StoreAndExploreMore(
-            stores: game?.stores ?? [],
-            website: game?.website,
-            reddit: game?.redditURL,
-            metacritic: game?.metacriticURL
+            stores: presenter.gameDetail?.stores ?? [],
+            website: presenter.gameDetail?.website,
+            reddit: presenter.gameDetail?.redditURL,
+            metacritic: presenter.gameDetail?.metacriticURL
         )
     }
     
     private var developersAndAlternativeNamesView: some View {
         DevelopersAndAlternativeNamesView(
-            developers: game?.developers ?? [],
-            alternativeNames: game?.alternativeNames ?? []
+            developers: presenter.gameDetail?.developers ?? [],
+            alternativeNames: presenter.gameDetail?.alternativeNames ?? []
         )
     }
     
     private var tagsView: some View {
-        RowView("Tags", values: game?.tags ?? [])
+        RowView("Tags", values: presenter.gameDetail?.tags ?? [])
     }
 
 }
 
 extension GameDetailView {
-    private func getDetail(id: Int) async {
-        isLoading = true
-        defer { isLoading = false }
-        
-        let result = await NetworkService().getGame(id: id)
-        switch result {
-        case .success(let fetchedGame):
-            await MainActor.run {
-                self.game = fetchedGame
-                self.isFavorite = coreDataManager.favoriteGames.contains { $0.id == fetchedGame.id }
-                self.errorMessage = nil
-            }
-            
-        case .failure(let error):
-            await MainActor.run {
-                self.errorMessage = error.description
-            }
+    private func getGameDetail() {
+        presenter.getGameDetail()
+        if let game = presenter.gameDetail {
+            isFavorite = coreDataManager.favoriteGames.contains { $0.id == game.id }
         }
     }
     
     private func toggleFavorite() {
         if isFavorite {
-            if let game {
+            if let game = presenter.gameDetail {
                 coreDataManager.removeFavorite(game)
             }
         } else {
-            if let game {
+            if let game = presenter.gameDetail {
                 coreDataManager.addFavorite(game)
             }
         }

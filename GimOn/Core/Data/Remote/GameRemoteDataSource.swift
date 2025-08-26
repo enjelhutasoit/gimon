@@ -9,6 +9,7 @@ import Foundation
 
 protocol GameRemoteDataSourceProtocol {
     func getGameList(result: @escaping (Result<[GameResponse], Error>) -> Void)
+    func getGameDetail(for id: Int, result: @escaping (Result<GameDetailResponse, Error>) -> Void)
 }
 
 final class GameRemoteDataSource: NSObject {
@@ -29,6 +30,26 @@ extension GameRemoteDataSource: GameRemoteDataSourceProtocol {
                 do {
                     let response = try decoder.decode(GameListResponse.self, from: data)
                     result(.success(response.games))
+                } catch {
+                    result(.failure(NetworkError.invalidResponse))
+                }
+            }
+        }
+        task.resume()
+    }
+    
+    func getGameDetail(for id: Int, result: @escaping (Result<GameDetailResponse, Error>) -> Void) {
+        guard let url = URL(string: EndPoints.Gets.gameDetail(id: id).url) else { return }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            if error != nil {
+                result(.failure(NetworkError.addressUnreachable(url)))
+            } else if let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 {
+                let decoder = JSONDecoder()
+                
+                do {
+                    let response = try decoder.decode(GameDetailResponse.self, from: data)
+                    result(.success(response))
                 } catch {
                     result(.failure(NetworkError.invalidResponse))
                 }

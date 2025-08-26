@@ -9,6 +9,8 @@ import SwiftUI
 
 class GameListRouter {
     func makeDetailView(for id: Int) -> some View {
-        return GameDetailView(id: id)
+        let interactor = Injection.init().provideGameDetailUseCase()
+        let presenter = GameDetailPresenter(useCase: interactor, id: id)
+        return GameDetailView(presenter: presenter)
     }
 }

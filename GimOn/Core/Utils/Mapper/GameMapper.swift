@@ -25,4 +25,30 @@ final class GameMapper {
             )
         }
     }
+    
+    static func gameDetailMapper(
+        input: GameDetailResponse
+    ) -> GameDetailModel {
+        return GameDetailModel(
+            alternativeNames: input.alternativeNames ?? [],
+            backgroundImage: URL(string: input.backgroundImage ?? ""),
+            description: input.descriptionRaw ?? "",
+            developers: input.developers?.compactMap { $0.name } ?? [],
+            esrbRating: input.esrbRating.map { $0.name ?? "" } ?? "",
+            genres: input.genres?.compactMap { $0.name } ?? [],
+            id: input.id,
+            metacritic: input.metacritic ?? 0,
+            metacriticURL: URL(string: input.metacriticURL ?? ""),
+            name: input.name ?? "",
+            parentPlatforms: input.parentPlatforms?.compactMap { PlatformModel(name: $0.platform?.name ?? "", slug: $0.platform?.slug ?? "") } ?? [],
+            playtime: input.playtime ?? 0,
+            rating: input.rating ?? 0.0,
+            ratingsCount: input.ratingsCount ?? 0,
+            redditURL: URL(string: input.redditURL ?? ""),
+            released: input.released ?? "",
+            stores: input.stores?.compactMap { StoreModel(name: $0.storeDetail?.name ?? "", domain: $0.storeDetail?.domain ?? "") } ?? [],
+            tags: input.tags?.compactMap { $0.name } ?? [],
+            website: URL(string: input.website ?? "")
+        )
+    }
 }

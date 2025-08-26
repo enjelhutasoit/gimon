@@ -33,7 +33,7 @@ struct FavoritesListView: View {
         }
         .background(.black)
         .navigationDestination(item: $selectedItem) { game in
-            GameDetailView(id: game.id)
+//            GameDetailView(id: game.id)
         }
         .onAppear {
             getListGame()
