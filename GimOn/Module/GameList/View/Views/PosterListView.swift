@@ -9,22 +9,22 @@ import CachedAsyncImage
 import SwiftUI
 
 struct PosterListView: View {
-    private let game: GameModel
+    private let posterURL: URL
     private let width: CGFloat
     private let height: CGFloat
     
     init(
-        game: GameModel,
+        posterURL: URL,
         width: CGFloat,
         height: CGFloat
     ) {
-        self.game = game
+        self.posterURL = posterURL
         self.width = width
         self.height = height
     }
     
     var body: some View {
-        CachedAsyncImage(url: game.backgroundImage) { phase in
+        CachedAsyncImage(url: posterURL) { phase in
             switch phase {
             case .success(let image):
                 loadedView(with: image)
@@ -71,6 +71,8 @@ extension PosterListView {
     private var errorView: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 8)
+                .fill(.clear)
+                .stroke(AppColors.primaryColor, lineWidth: 0.5)
                 .shadow(
                     color: AppColors.primaryColor.opacity(0.3),
                     radius: 2,

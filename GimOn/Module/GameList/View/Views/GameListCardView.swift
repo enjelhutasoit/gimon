@@ -22,7 +22,7 @@ struct GameItemView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 21) {
             PosterListView(
-                game: game,
+                posterURL: game.backgroundImage,
                 width: posterSize.width,
                 height: posterSize.height
             )
