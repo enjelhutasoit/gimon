@@ -14,31 +14,64 @@ protocol GameRepositoryProtocol {
 }
 
 final class GameRepository: NSObject {
-    typealias GameInstance = (GameRemoteDataSource) -> GameRepository
+    typealias GameInstance = (GameLocalDataSource, GameRemoteDataSource) -> GameRepository
     
+    private let local: GameLocalDataSource
     private let remote: GameRemoteDataSource
     
-    static let sharedInstance: GameInstance = { remoteRepo in
-        GameRepository(remote: remoteRepo)
+    static let sharedInstance: GameInstance = { localRepo, remoteRepo in
+        GameRepository(local: localRepo, remote: remoteRepo)
     }
     
-    init(remote: GameRemoteDataSource) {
+    init(local: GameLocalDataSource, remote: GameRemoteDataSource) {
+        self.local = local
         self.remote = remote
     }
 }
 
 extension GameRepository: GameRepositoryProtocol {
     func getGameList() -> AnyPublisher<[GameModel], Error> {
-        remote
+        local
             .getGameList()
-            .map { GameMapper.gameMapper(input: $0) }
+            .flatMap { result -> AnyPublisher<[GameModel], Error> in
+                if result.isEmpty {
+                    return self.remote
+                        .getGameList()
+                        .map { GameMapper.mapGameResponsesToEntities($0) }
+                        .catch { _ in self.local.getGameList() }
+                        .flatMap { games in
+                            self.local.addGameList(games)
+                        }
+                        .filter { $0 }
+                        .flatMap { _ in
+                            self.local.getGameList()
+                                .map { GameMapper.mapGameEntitiesToDomainModels($0) }
+                        }
+                        .eraseToAnyPublisher()
+                } else {
+                    return self.local
+                        .getGameList()
+                        .map { GameMapper.mapGameEntitiesToDomainModels($0) }
+                        .eraseToAnyPublisher()
+                }
+            }
             .eraseToAnyPublisher()
     }
     
     func getGameDetail(for id: Int) -> AnyPublisher<GameDetailModel, Error> {
-        remote
+        local
             .getGameDetail(for: id)
-            .map { GameMapper.gameDetailMapper(input: $0) }
+            .tryCatch { _ -> AnyPublisher<GameDetailEntity, Error> in
+                return self.remote.getGameDetail(for: id)
+                    .map { GameMapper.mapGameDetailResponseToEntity($0) }
+                    .flatMap { entity in
+                        self.local.addGame(entity)
+                            .filter { $0 }
+                            .map { _ in entity }
+                    }
+                    .eraseToAnyPublisher()
+            }
+            .map { GameMapper.mapGameDetailEntityToDomainModel($0) }
             .eraseToAnyPublisher()
     }
 }
