@@ -10,7 +10,7 @@ import SwiftUI
 @main
 struct GimOnApp: App {
     
-    @StateObject private var coreDataManager = CoreDataManager()
+//    @StateObject private var coreDataManager = CoreDataManager()
 
     let gameListPresenter = GameListPresenter(
         useCase: Injection.init().provideGameListUseCase()
@@ -25,7 +25,7 @@ struct GimOnApp: App {
             AppTabView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .tint(AppColors.primaryColor)
-                .environmentObject(coreDataManager)
+//                .environmentObject(coreDataManager)
                 .environmentObject(gameListPresenter)
                 .environmentObject(profilePresenter)
         }

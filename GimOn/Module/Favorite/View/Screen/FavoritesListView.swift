@@ -14,7 +14,7 @@ struct FavoritesListView: View {
     @State private var games: [GameModel] = []
     @State private var selectedItem: GameModel?
     
-    @EnvironmentObject var coreDataManager: CoreDataManager
+//    @EnvironmentObject var coreDataManager: CoreDataManager
 
     var body: some View {
         Group {
@@ -69,12 +69,12 @@ extension FavoritesListView {
 
 extension FavoritesListView {
     private func getListGame() {
-        let result = coreDataManager.fetchFavorites()
-        switch result {
-        case .success(let favorites):
-            games = favorites.map { GameModel(from: $0) }
-        case .failure(let error):
-            errorMessage = "Failed to load favorites: \(error.localizedDescription)"
-        }
+//        let result = coreDataManager.fetchFavorites()
+//        switch result {
+//        case .success(let favorites):
+//            games = favorites.map { GameModel(from: $0) }
+//        case .failure(let error):
+//            errorMessage = "Failed to load favorites: \(error.localizedDescription)"
+//        }
     }
 }

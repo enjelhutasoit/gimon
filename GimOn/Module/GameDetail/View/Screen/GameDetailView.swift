@@ -13,7 +13,6 @@ struct GameDetailView: View {
     @State private var isLoading: Bool = false
     @Environment(\.dismiss) private var dismiss
     
-    @EnvironmentObject var coreDataManager: CoreDataManager
     @ObservedObject var presenter: GameDetailPresenter
     
     var body: some View {
@@ -144,21 +143,9 @@ extension GameDetailView {
 extension GameDetailView {
     private func getGameDetail() {
         presenter.getGameDetail()
-        if let game = presenter.gameDetail {
-            isFavorite = coreDataManager.favoriteGames.contains { $0.id == game.id }
-        }
     }
     
     private func toggleFavorite() {
-        if isFavorite {
-            if let game = presenter.gameDetail {
-                coreDataManager.removeFavorite(game)
-            }
-        } else {
-            if let game = presenter.gameDetail {
-                coreDataManager.addFavorite(game)
-            }
-        }
         isFavorite.toggle()
     }
 }
