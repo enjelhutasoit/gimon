@@ -10,6 +10,7 @@ import SwiftUI
 struct AppTabView: View {
     
     @EnvironmentObject var gameListPresenter: GameListPresenter
+    @EnvironmentObject var profilePresenter: ProfilePresenter
 
     var body: some View {
         TabView {
@@ -29,7 +30,9 @@ struct AppTabView: View {
                 }
                 
                 NavigationStack {
-                    ProfileView()
+                    ProfileView(
+                        presenter: profilePresenter
+                    )
                 }
                 .tabItem {
                     Label("Profil", systemImage: "person.crop.circle.fill")

@@ -8,44 +8,46 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @State private var openEditorView: Bool = false
     
-    @AppStorage(ProfileStore.nameKey) var name = ProfileStore.shared.name
-    @AppStorage(ProfileStore.usernameKey) var username = ProfileStore.shared.username
-    @AppStorage(ProfileStore.bioKey) var bio = ProfileStore.shared.bio
+    @ObservedObject var presenter: ProfilePresenter
     
     var body: some View {
         ScrollView {
             VStack {
                 HStack(alignment: .center, spacing: 12) {
                     PhotoProfile(
-                        image: Image(DefaultUser.photo),
+                        image: Image(DefaultProfile.photo),
                         size: CGSize(width: 100, height: 100),
                         borderWidth: 3
                     )
                     
                     UserBioView(
-                        name: name,
-                        username: username,
-                        bio: bio
+                        name: presenter.profile.fullname,
+                        username: presenter.profile.username,
+                        bio: presenter.profile.bio
                     )
                 }
                 
                 HStack(alignment: .center, spacing: 12) {
                     BorderedButton("Edit Profile", fixedWidth: false) {
-                        openEditorView.toggle()
+                        presenter.onTapEditProfile()
                     }
                     
-                    BorderedButton(DefaultUser.web, fixedWidth: false) {
-                        openURLInBrowser(DefaultUser.webURL)
+                    BorderedButton(DefaultProfile.web, fixedWidth: false) {
+                        openURLInBrowser(DefaultProfile.webURL)
                     }
                 }
                 .padding(.top)
             }
             .padding(.horizontal)
         }
-        .navigationDestination(isPresented: $openEditorView) {
-            EditProfileView()
+        .onAppear {
+            presenter.getProfile()
+        }
+        .navigationDestination(
+            isPresented: $presenter.isNavigatingToEditProfile
+        ) {
+            presenter.editProfileDestination
         }
         .background(.black)
     }

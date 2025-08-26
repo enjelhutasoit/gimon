@@ -15,6 +15,10 @@ struct GimOnApp: App {
     let gameListPresenter = GameListPresenter(
         useCase: Injection.init().provideGameListUseCase()
     )
+    
+    let profilePresenter = ProfilePresenter(
+        useCase: Injection.init().provideProfileUseCase()
+    )
 
     var body: some Scene {
         WindowGroup {
@@ -23,6 +27,7 @@ struct GimOnApp: App {
                 .tint(AppColors.primaryColor)
                 .environmentObject(coreDataManager)
                 .environmentObject(gameListPresenter)
+                .environmentObject(profilePresenter)
         }
     }
 }

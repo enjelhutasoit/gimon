@@ -22,4 +22,14 @@ final class Injection: NSObject {
         let repository = provideRepository()
         return GameDetailInteractor(repository: repository)
     }
+    
+    func provideProfileRespository() -> ProfileRespositoryProtocol {
+        let local = ProfileLocalDataSource(userDefault: UserDefaults.standard)
+        return ProfileRespository(local: local)
+    }
+    
+    func provideProfileUseCase() -> ProfileUseCase {
+        let reposiroty = provideProfileRespository()
+        return ProfileInteractor(repository: reposiroty)
+    }
 }

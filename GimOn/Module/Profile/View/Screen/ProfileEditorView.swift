@@ -8,18 +8,33 @@
 import SwiftUI
 
 struct ProfileEditorView: View {
+        
     @Environment(\.dismiss) private var dismiss
     
     @State private var showDiscardAlert = false
     @State private var showEmptyInputAlert = false
     @State private var initialInput: String = ""
-    
+    @State private var inputValue: String
+
     let navTitle: String
     let inputPlaceholder: String
     let instruction: String
-    @Binding var inputValue: String
-    var onSave: (() -> Void)?
-    
+    var onSave: ((String) -> Void)?
+
+    init(
+        navTitle: String,
+        inputPlaceholder: String,
+        instruction: String,
+        initialInputValue: String,
+        onSave: ((String) -> Void)?
+    ) {
+        self.navTitle = navTitle
+        self.inputPlaceholder = inputPlaceholder
+        self.instruction = instruction
+        self._inputValue = State(initialValue: initialInputValue)
+        self.onSave = onSave
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -103,7 +118,7 @@ private extension ProfileEditorView {
             return
         }
         
-        onSave?()
+        onSave?(inputValue)
         dismiss()
     }
 }

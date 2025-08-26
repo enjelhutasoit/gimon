@@ -1,5 +1,5 @@
 //
-//  UserModel.swift
+//  DefaultProfile.swift
 //  GimOn
 //
 //  Created by Enjel Hutasoit on 31/07/25.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DefaultUser {
+struct DefaultProfile {
     static let email = "contact@enjelhutasoit.com"
     static let photo = "enjelina"
     static let webURL = "https://enjelhutasoit.com"

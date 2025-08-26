@@ -1,0 +1,13 @@
+//
+//  ProfileUseCase.swift
+//  GimOn
+//
+//  Created by Enjel Hutasoit on 26/08/25.
+//
+
+import Foundation
+
+protocol ProfileUseCase {
+    func getProfile() -> ProfileModel
+    func updateProfile(_ profile: ProfileModel)
+}
