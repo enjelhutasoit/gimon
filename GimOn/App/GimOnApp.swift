@@ -12,12 +12,17 @@ struct GimOnApp: App {
     
     @StateObject private var coreDataManager = CoreDataManager()
 
+    let gameListPresenter = GameListPresenter(
+        useCase: Injection.init().provideGameListUseCase()
+    )
+
     var body: some Scene {
         WindowGroup {
             AppTabView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .tint(AppColors.primaryColor)
                 .environmentObject(coreDataManager)
+                .environmentObject(gameListPresenter)
         }
     }
 }

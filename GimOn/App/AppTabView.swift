@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct AppTabView: View {
+    
+    @EnvironmentObject var gameListPresenter: GameListPresenter
+
     var body: some View {
         TabView {
             Group {
                 NavigationStack {
-                    GameListView()
+                    GameListView(presenter: gameListPresenter)
                 }
                 .tabItem {
                     Label("Games", systemImage: "gamecontroller")
