@@ -15,7 +15,7 @@ struct AppTabView: View {
                     GameListView()
                 }
                 .tabItem {
-                    Label("Home", systemImage: "house.fill")
+                    Label("Games", systemImage: "gamecontroller")
                 }
                 
                 NavigationStack {
@@ -30,10 +30,10 @@ struct AppTabView: View {
                 }
                 .tabItem {
                     Label("Profil", systemImage: "person.crop.circle.fill")
-                        .tint(AppColors.primaryColor)
                 }
             }
             .toolbarBackground(.black, for: .tabBar)
+            .preferredColorScheme(.dark)
         }
     }
 }
