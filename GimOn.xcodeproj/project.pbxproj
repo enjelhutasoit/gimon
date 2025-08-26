@@ -8,11 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		EF28796F2E3BB38700D257DA /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = EF28796E2E3BB38700D257DA /* .swiftlint.yml */; };
+		EFF964B22E5D526D00BD7DF7 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = EFF964B12E5D526D00BD7DF7 /* Debug.xcconfig */; };
+		EFF964B42E5D528E00BD7DF7 /* Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = EFF964B32E5D528E00BD7DF7 /* Release.xcconfig */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		EF28796E2E3BB38700D257DA /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		EFF189492E3BA345008C8F34 /* GimOn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GimOn.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EFF964B12E5D526D00BD7DF7 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		EFF964B32E5D528E00BD7DF7 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -50,6 +54,7 @@
 		EFF189402E3BA345008C8F34 = {
 			isa = PBXGroup;
 			children = (
+				EFF964B52E5D6A2800BD7DF7 /* Config */,
 				EF28796E2E3BB38700D257DA /* .swiftlint.yml */,
 				EFF1894B2E3BA345008C8F34 /* GimOn */,
 				EFF1894A2E3BA345008C8F34 /* Products */,
@@ -62,6 +67,15 @@
 				EFF189492E3BA345008C8F34 /* GimOn.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		EFF964B52E5D6A2800BD7DF7 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				EFF964B32E5D528E00BD7DF7 /* Release.xcconfig */,
+				EFF964B12E5D526D00BD7DF7 /* Debug.xcconfig */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -129,7 +143,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EFF964B42E5D528E00BD7DF7 /* Release.xcconfig in Resources */,
 				EF28796F2E3BB38700D257DA /* .swiftlint.yml in Resources */,
+				EFF964B22E5D526D00BD7DF7 /* Debug.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,6 +187,7 @@
 /* Begin XCBuildConfiguration section */
 		EFF189552E3BA349008C8F34 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EFF964B12E5D526D00BD7DF7 /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -234,6 +251,7 @@
 		};
 		EFF189562E3BA349008C8F34 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EFF964B32E5D528E00BD7DF7 /* Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -290,6 +308,7 @@
 		};
 		EFF189582E3BA349008C8F34 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EFF964B32E5D528E00BD7DF7 /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -320,6 +339,7 @@
 		};
 		EFF189592E3BA349008C8F34 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EFF964B32E5D528E00BD7DF7 /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

@@ -7,33 +7,29 @@
 
 import Foundation
 
-class NetworkService {
-    private let apiFileName = "RAWG-Info"
-    private let apiFileType = "plist"
-    private let apiKeyConfigKey = "API_KEY"
+struct API {
+    static let baseUrl = "https://api.rawg.io/api/games"
     
-    private var apiKey: String {
-        guard let plist = NSDictionary(contentsOfFile: Bundle.main.path(forResource: apiFileName, ofType: apiFileType) ?? "") else {
-            fatalError("Couldn't find or load '\(apiFileName).\(apiFileType)'.")
+    static let apiKey: String = {
+        guard let apiKey = Bundle.main.object(forInfoDictionaryKey: "API_KEY") as? String else {
+            fatalError("API_KEY not found in Info.plist")
         }
-        
-        guard let value = plist[apiKeyConfigKey] as? String else {
-            fatalError("Missing '\(apiKeyConfigKey)' in '\(apiFileName).\(apiFileType)'.")
-        }
-        
-        return value
-    }
+        return apiKey
+    }()
+}
+
+class NetworkService {
     
     let pageSize = "35"
     
     func getGames() async -> Result<[Game], NetworkError> {
-        if apiKey.isEmpty {
+        if API.apiKey.isEmpty {
             return .failure(.missingApiKey)
         }
 
         var components = URLComponents(string: "https://api.rawg.io/api/games")!
         components.queryItems = [
-            URLQueryItem(name: "key", value: apiKey),
+            URLQueryItem(name: "key", value: API.apiKey),
             URLQueryItem(name: "page_size", value: pageSize)
         ]
         let request = URLRequest(url: components.url!)
@@ -55,13 +51,13 @@ class NetworkService {
     }
     
     func getGame(id: Int) async -> Result<GameDetail, NetworkError> {
-        if apiKey.isEmpty {
+        if API.apiKey.isEmpty {
             return .failure(.missingApiKey)
         }
         
         var components = URLComponents(string: "https://api.rawg.io/api/games/\(id)")!
         components.queryItems = [
-            URLQueryItem(name: "key", value: apiKey)
+            URLQueryItem(name: "key", value: API.apiKey)
         ]
         let request = URLRequest(url: components.url!)
         do {
