@@ -8,11 +8,9 @@
 import SwiftUI
 
 struct GameDetailView: View {
-    @State private var isDescriptionExpanded: Bool = false
-    @State private var isFavorite: Bool = false
-    @State private var isLoading: Bool = false
-    @Environment(\.dismiss) private var dismiss
     
+    @State private var isDescriptionExpanded: Bool = false
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject var presenter: GameDetailPresenter
     
     var body: some View {
@@ -47,6 +45,12 @@ struct GameDetailView: View {
 }
 
 extension GameDetailView {
+    private func getGameDetail() {
+        presenter.getGameDetail()
+    }
+}
+
+extension GameDetailView {
     private func loadedView(geoProxy: GeometryProxy) -> some View {
         ScrollView {
             ZStack(alignment: .bottom) {
@@ -69,8 +73,10 @@ extension GameDetailView {
     }
     
     private var favoriteButton: some View {
-        FavoriteButton(isSelected: $isFavorite) {
-            toggleFavorite()
+        FavoriteButton(
+            isSelected: presenter.gameDetail?.favorite ?? false
+        ) {
+            presenter.updateGame()
         }
         .frame(maxWidth: .infinity, alignment: .center)
     }
@@ -138,14 +144,4 @@ extension GameDetailView {
         RowView("Tags", values: presenter.gameDetail?.tags ?? [])
     }
 
-}
-
-extension GameDetailView {
-    private func getGameDetail() {
-        presenter.getGameDetail()
-    }
-    
-    private func toggleFavorite() {
-        isFavorite.toggle()
-    }
 }

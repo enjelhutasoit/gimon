@@ -40,4 +40,22 @@ class GameDetailPresenter: ObservableObject {
             })
             .store(in: &cancellables)
     }
+    
+    func updateGame() {
+        useCase
+            .updateGameDetail(for: id)
+            .receive(on: RunLoop.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    self.isLoading = false
+                case .failure(let error):
+                    self.isLoading = false
+                    self.errorMessage = error.localizedDescription
+                }
+            }, receiveValue: { gameDetail in
+                self.gameDetail = gameDetail
+            })
+            .store(in: &cancellables)
+    }
 }

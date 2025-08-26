@@ -9,4 +9,5 @@ import Combine
 
 protocol GameDetailUseCase {
     func getGameDetail(for id: Int) -> AnyPublisher<GameDetailModel, Error>
+    func updateGameDetail(for id: Int) -> AnyPublisher<GameDetailModel, Error>
 }

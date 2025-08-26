@@ -19,4 +19,8 @@ extension GameDetailInteractor: GameDetailUseCase {
     func getGameDetail(for id: Int) -> AnyPublisher<GameDetailModel, Error> {
         repository.getGameDetail(for: id)
     }
+    
+    func updateGameDetail(for id: Int) -> AnyPublisher<GameDetailModel, Error> {
+        repository.updateFavoriteDetail(for: id)
+    }
 }
