@@ -14,6 +14,10 @@ struct GimOnApp: App {
         useCase: Injection.init().provideGameListUseCase()
     )
     
+    let favoritesListPresenter = FavoritesListPresenter(
+        useCase: Injection.init().provideFavoritesListUseCase()
+    )
+    
     let profilePresenter = ProfilePresenter(
         useCase: Injection.init().provideProfileUseCase()
     )
@@ -24,6 +28,7 @@ struct GimOnApp: App {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .tint(AppColors.primaryColor)
                 .environmentObject(gameListPresenter)
+                .environmentObject(favoritesListPresenter)
                 .environmentObject(profilePresenter)
         }
     }

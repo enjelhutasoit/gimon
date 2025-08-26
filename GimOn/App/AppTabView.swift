@@ -10,6 +10,7 @@ import SwiftUI
 struct AppTabView: View {
     
     @EnvironmentObject var gameListPresenter: GameListPresenter
+    @EnvironmentObject var favoritesListPresenter: FavoritesListPresenter
     @EnvironmentObject var profilePresenter: ProfilePresenter
 
     var body: some View {
@@ -23,7 +24,9 @@ struct AppTabView: View {
                 }
                 
                 NavigationStack {
-                    FavoritesListView()
+                    FavoriteListView(
+                        presenter: favoritesListPresenter
+                    )
                 }
                 .tabItem {
                     Label("Favorite", systemImage: "heart")

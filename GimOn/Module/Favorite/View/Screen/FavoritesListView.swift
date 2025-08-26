@@ -7,22 +7,24 @@
 
 import SwiftUI
 
-struct FavoritesListView: View {
+struct FavoriteListView: View {
+    
     private let itemHeight = 135.0
     private let itemWidth = 143.0
-    @State private var errorMessage: String?
-    @State private var games: [GameModel] = []
-    @State private var selectedItem: GameModel?
+    
+    @ObservedObject var presenter: FavoritesListPresenter
     
     var body: some View {
         Group {
-            if let errorMessage {
+            if presenter.isLoading {
+                LoadingView()
+            } else if !presenter.errorMessage.isEmpty {
                 ErrorView(
-                    message: errorMessage,
-                    retryAction: { getListGame() }
+                    message: presenter.errorMessage,
+                    retryAction: { getFavoriteList() }
                 )
             } else {
-                if games.count > 0 {
+                if presenter.favoriteList.count > 0 {
                     loadedView
                 } else {
                     EmptyListView(message: "Your favorites list is empty.")
@@ -30,11 +32,8 @@ struct FavoritesListView: View {
             }
         }
         .background(.black)
-        .navigationDestination(item: $selectedItem) { game in
-//            GameDetailView(id: game.id)
-        }
         .onAppear {
-            getListGame()
+            getFavoriteList()
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -48,24 +47,25 @@ struct FavoritesListView: View {
     }
 }
 
-extension FavoritesListView {
+extension FavoriteListView {
+    private func getFavoriteList() {
+        presenter.getFavoriteList()
+    }
+    
     private var loadedView: some View {
         ScrollView {
             LazyVStack {
-                ForEach(games) { game in
-                    GameItemView(
-                        game: game,
-                        posterSize: CGSize(width: itemWidth, height: itemHeight)
-                    )
+                ForEach(presenter.favoriteList) { game in
+                    presenter.linkBuilder(for: game.id) {
+                        GameItemView(
+                            game: game,
+                            posterSize: CGSize(width: itemWidth, height: itemHeight)
+                        )
+                    }
                     .padding(.top, 18)
                     .padding(.horizontal, 2)
                 }
             }
         }
-    }
-}
-
-extension FavoritesListView {
-    private func getListGame() {
     }
 }
