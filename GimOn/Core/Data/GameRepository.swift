@@ -5,11 +5,12 @@
 ////  Created by Enjel Hutasoit on 26/08/25.
 ////
 
+import Combine
 import Foundation
 
 protocol GameRepositoryProtocol {
-    func getGameList(result: @escaping (Result<[GameModel], Error>) -> Void)
-    func getGameDetail(for id: Int, result: @escaping (Result<GameDetailModel, Error>) -> Void)
+    func getGameList() -> AnyPublisher<[GameModel], Error>
+    func getGameDetail(for id: Int) -> AnyPublisher<GameDetailModel, Error>
 }
 
 final class GameRepository: NSObject {
@@ -27,27 +28,17 @@ final class GameRepository: NSObject {
 }
 
 extension GameRepository: GameRepositoryProtocol {
-    func getGameList(result: @escaping (Result<[GameModel], Error>) -> Void) {
-        remote.getGameList { remoteResponse in
-            switch remoteResponse {
-            case .success(let gameListResponse):
-                let gameListModel = GameMapper.gameMapper(input: gameListResponse)
-                result(.success(gameListModel))
-            case .failure(let error):
-                result(.failure(error))
-            }
-        }
+    func getGameList() -> AnyPublisher<[GameModel], Error> {
+        remote
+            .getGameList()
+            .map { GameMapper.gameMapper(input: $0) }
+            .eraseToAnyPublisher()
     }
     
-    func getGameDetail(for id: Int, result: @escaping (Result<GameDetailModel, any Error>) -> Void) {
-        remote.getGameDetail(for: id) { remoteResponse in
-            switch remoteResponse {
-            case .success(let gameDetailResponse):
-                let gameDetailModel = GameMapper.gameDetailMapper(input: gameDetailResponse)
-                result(.success(gameDetailModel))
-            case .failure(let error):
-                result(.failure(error))
-            }
-        }
+    func getGameDetail(for id: Int) -> AnyPublisher<GameDetailModel, Error> {
+        remote
+            .getGameDetail(for: id)
+            .map { GameMapper.gameDetailMapper(input: $0) }
+            .eraseToAnyPublisher()
     }
 }

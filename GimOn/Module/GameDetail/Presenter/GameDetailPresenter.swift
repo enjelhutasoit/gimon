@@ -5,10 +5,11 @@
 //  Created by Enjel Hutasoit on 26/08/25.
 //
 
+import Combine
 import SwiftUI
 
 class GameDetailPresenter: ObservableObject {
-    
+    private var cancellables: Set<AnyCancellable> = []
     private let useCase: GameDetailUseCase
     private let id: Int
     
@@ -24,19 +25,19 @@ class GameDetailPresenter: ObservableObject {
     func getGameDetail() {
         isLoading = true
         
-        useCase.getGameDetail(for: id) { result in
-            switch result {
-            case .success(let gameDetail):
-                DispatchQueue.main.async {
+        useCase.getGameDetail(for: id)
+            .receive(on: RunLoop.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
                     self.isLoading = false
-                    self.gameDetail = gameDetail
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
+                case .failure(let error):
                     self.isLoading = false
                     self.errorMessage = error.localizedDescription
                 }
-            }
-        }
+            }, receiveValue: { gameDetailModel in
+                self.gameDetail = gameDetailModel
+            })
+            .store(in: &cancellables)
     }
 }

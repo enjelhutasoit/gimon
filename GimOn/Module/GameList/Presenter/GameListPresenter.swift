@@ -5,9 +5,11 @@
 //  Created by Enjel Hutasoit on 26/08/25.
 //
 
+import Combine
 import SwiftUI
 
 class GameListPresenter: ObservableObject {
+    private var cancellables: Set<AnyCancellable> = []
     private let useCase: GameListUseCase
     
     @Published var gameList: [GameModel] = []
@@ -21,23 +23,24 @@ class GameListPresenter: ObservableObject {
     
     func getGameList() {
         guard gameList.isEmpty else { return }
-
+        
         isLoading = true
         
-        useCase.getGameList { result in
-            switch result {
-            case .success(let gameList):
-                DispatchQueue.main.async {
+        useCase.getGameList()
+            .receive(on: RunLoop.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
                     self.isLoading = false
-                    self.gameList = gameList
-                }
-            case .failure(let error):
-                DispatchQueue.main.async {
+                case .failure(let error):
                     self.isLoading = false
                     self.errorMessage = error.localizedDescription
                 }
-            }
-        }
+                
+            }, receiveValue: { gameListModel in
+                self.gameList = gameListModel
+            })
+            .store(in: &cancellables)
     }
     
     func linkBuilder<Content: View>(for id: Int, @ViewBuilder content: () -> Content) -> some View {
