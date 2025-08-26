@@ -58,9 +58,7 @@ extension FavoritesListView {
                     GameItemView(
                         game: game,
                         posterSize: CGSize(width: itemWidth, height: itemHeight)
-                    ) {
-                        selectedItem = game
-                    }
+                    )
                     .padding(.top, 18)
                     .padding(.horizontal, 2)
                 }

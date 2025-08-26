@@ -10,16 +10,13 @@ import SwiftUI
 struct GameItemView: View {
     private let game: GameModel
     private let posterSize: CGSize
-    private let select: () -> Void
     
     init(
         game: GameModel,
-        posterSize: CGSize,
-        select: @escaping () -> Void = {}
+        posterSize: CGSize
     ) {
         self.game = game
         self.posterSize = posterSize
-        self.select = select
     }
     
     var body: some View {
@@ -31,9 +28,6 @@ struct GameItemView: View {
             )
             
             GameInfoView(game: game)
-        }
-        .onTapGesture {
-            select()
         }
     }
 }
