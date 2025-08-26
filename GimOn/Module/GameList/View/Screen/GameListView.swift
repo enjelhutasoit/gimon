@@ -11,9 +11,9 @@ struct GameListView: View {
     private let itemHeight = 135.0
     private let itemWidth = 143.0
     @State private var errorMessage: String?
-    @State private var games: [Game] = []
+    @State private var games: [GameModel] = []
     @State private var isLoading: Bool = false
-    @State private var selectedItem: Game?
+    @State private var selectedItem: GameModel?
 
     var body: some View {
         NavigationStack {

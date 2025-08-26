@@ -11,8 +11,8 @@ struct FavoritesGameView: View {
     private let itemHeight = 135.0
     private let itemWidth = 143.0
     @State private var errorMessage: String?
-    @State private var games: [Game] = []
-    @State private var selectedItem: Game?
+    @State private var games: [GameModel] = []
+    @State private var selectedItem: GameModel?
     
     @EnvironmentObject var coreDataManager: CoreDataManager
 
@@ -74,7 +74,7 @@ extension FavoritesGameView {
         let result = coreDataManager.fetchFavorites()
         switch result {
         case .success(let favorites):
-            games = favorites.map { Game(from: $0) }
+            games = favorites.map { GameModel(from: $0) }
         case .failure(let error):
             errorMessage = "Failed to load favorites: \(error.localizedDescription)"
         }

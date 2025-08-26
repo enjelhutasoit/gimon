@@ -1,5 +1,5 @@
 //
-//  Game.swift
+//  GameModel.swift
 //  GimOn
 //
 //  Created by Enjel Hutasoit on 31/07/25.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Game: Identifiable, Hashable {
+struct GameModel: Identifiable, Hashable {
     var id: Int
     let name: String
     var released: String
@@ -41,7 +41,7 @@ struct Game: Identifiable, Hashable {
     }
 }
 
-extension Game {
+extension GameModel {
     init(
         backgroundImage: URL,
         genres: [String],

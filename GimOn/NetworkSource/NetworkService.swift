@@ -22,7 +22,7 @@ class NetworkService {
     
     let pageSize = "35"
     
-    func getGames() async -> Result<[Game], NetworkError> {
+    func getGames() async -> Result<[GameModel], NetworkError> {
         if API.apiKey.isEmpty {
             return .failure(.missingApiKey)
         }
@@ -78,9 +78,9 @@ class NetworkService {
 extension NetworkService {
     fileprivate func gameMapper(
         input gameResponses: [GameResponse]
-    ) -> [Game] {
+    ) -> [GameModel] {
         return gameResponses.map { item in
-            return Game(
+            return GameModel(
                 backgroundImage: URL(string: item.backgroundImage ?? "") ?? URL(string: "")!,
                 genres: item.genres?.compactMap { $0.name } ?? [],
                 id: item.id,

@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct PosterListView: View {
-    private let game: Game
+    private let game: GameModel
     private let width: CGFloat
     private let height: CGFloat
     
     init(
-        game: Game,
+        game: GameModel,
         width: CGFloat,
         height: CGFloat
     ) {

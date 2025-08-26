@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct GameItemView: View {
-    private let game: Game
+    private let game: GameModel
     private let posterSize: CGSize
     private let select: () -> Void
     
     init(
-        game: Game,
+        game: GameModel,
         posterSize: CGSize,
         select: @escaping () -> Void = {}
     ) {

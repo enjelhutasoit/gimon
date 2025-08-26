@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct GameInfoView: View {
-    let game: Game
+    let game: GameModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
