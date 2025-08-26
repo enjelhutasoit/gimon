@@ -50,7 +50,7 @@ class NetworkService {
         }
     }
     
-    func getGame(id: Int) async -> Result<GameDetail, NetworkError> {
+    func getGame(id: Int) async -> Result<GameDetailModel, NetworkError> {
         if API.apiKey.isEmpty {
             return .failure(.missingApiKey)
         }
@@ -98,8 +98,8 @@ extension NetworkService {
 extension NetworkService {
     fileprivate func gameDetailMapper(
         input: GameDetailResponse
-    ) -> GameDetail {
-        return GameDetail(
+    ) -> GameDetailModel {
+        return GameDetailModel(
             alternativeNames: input.alternativeNames ?? [],
             backgroundImage: URL(string: input.backgroundImage ?? ""),
             description: input.descriptionRaw ?? "",

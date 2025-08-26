@@ -32,7 +32,7 @@ class CoreDataManager: ObservableObject {
         }
     }
     
-    func addFavorite(_ game: GameDetail) {
+    func addFavorite(_ game: GameDetailModel) {
         let favGame = FavoriteGame(context: container.viewContext)
         favGame.backgroundImage = game.backgroundImage?.absoluteString
         favGame.genres = game.genres
@@ -47,7 +47,7 @@ class CoreDataManager: ObservableObject {
         saveContext()
     }
     
-    func removeFavorite(_ game: GameDetail) {
+    func removeFavorite(_ game: GameDetailModel) {
         let request: NSFetchRequest<FavoriteGame> = FavoriteGame.fetchRequest()
         request.predicate = NSPredicate(format: "id == %d", game.id)
 

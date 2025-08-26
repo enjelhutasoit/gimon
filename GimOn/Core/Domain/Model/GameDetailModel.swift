@@ -1,5 +1,5 @@
 //
-//  GameDetail.swift
+//  GameDetailModel.swift
 //  GimOn
 //
 //  Created by Enjel Hutasoit on 01/08/25.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GameDetail {
+struct GameDetailModel {
     let alternativeNames: [String]
     let backgroundImage: URL?
     let description: String

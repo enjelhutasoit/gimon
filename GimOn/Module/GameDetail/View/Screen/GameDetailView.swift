@@ -10,7 +10,7 @@ import SwiftUI
 struct GameDetailView: View {
     private let id: Int
     @State private var errorMessage: String?
-    @State private var game: GameDetail?
+    @State private var game: GameDetailModel?
     @State private var isDescriptionExpanded: Bool = false
     @State private var isFavorite: Bool = false
     @State private var isLoading: Bool = false
