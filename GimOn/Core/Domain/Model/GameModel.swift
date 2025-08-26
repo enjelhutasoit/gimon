@@ -63,18 +63,4 @@ extension GameModel {
         self.ratingCount = formattedRatingCount
         self.released = formattedReleased
     }
-
-    init(from favorite: FavoriteGame) {
-        self.init(
-            backgroundImage: URL(string: favorite.backgroundImage ?? "") ?? URL(string: "")!,
-            genres: favorite.genres ?? [],
-            id: Int(favorite.id),
-            name: favorite.name ?? "",
-            parentPlatfroms: favorite.parentPlatforms ?? [],
-            formattedPlaytime: favorite.playtime ?? "",
-            formattedRating: favorite.rating ?? "",
-            formattedRatingCount: favorite.ratingCount ?? "",
-            formattedReleased: formatYear(from: favorite.released ?? "", inputDateFormat: "dd MMM yyy")
-        )
-    }
 }
