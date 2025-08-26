@@ -26,6 +26,11 @@ final class Injection: NSObject {
         return GameDetailInteractor(repository: repository)
     }
     
+    func provideFavoritesListUseCase() -> FavoritesListUseCase {
+        let repository = provideRepository()
+        return FavoritesListInteractor(repository: repository)
+    }
+    
     func provideProfileRespository() -> ProfileRespositoryProtocol {
         let local = ProfileLocalDataSource(userDefault: UserDefaults.standard)
         return ProfileRespository(local: local)
