@@ -5,6 +5,7 @@
 //  Created by Enjel Hutasoit on 31/07/25.
 //
 
+import CachedAsyncImage
 import SwiftUI
 
 struct PosterListView: View {
@@ -23,7 +24,7 @@ struct PosterListView: View {
     }
     
     var body: some View {
-        AsyncImage(url: game.backgroundImage) { phase in
+        CachedAsyncImage(url: game.backgroundImage) { phase in
             switch phase {
             case .success(let image):
                 loadedView(with: image)
