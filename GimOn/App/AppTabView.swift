@@ -19,7 +19,7 @@ struct AppTabView: View {
                 }
                 
                 NavigationStack {
-                    FavoritesGameView()
+                    FavoritesListView()
                 }
                 .tabItem {
                     Label("Favorite", systemImage: "heart")

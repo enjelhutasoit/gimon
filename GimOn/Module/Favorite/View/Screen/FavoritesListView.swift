@@ -1,5 +1,5 @@
 //
-//  FavoriteGamesView.swift
+//  FavoritesListView.swift
 //  GimOn
 //
 //  Created by Enjel Hutasoit on 08/08/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct FavoritesGameView: View {
+struct FavoritesListView: View {
     private let itemHeight = 135.0
     private let itemWidth = 143.0
     @State private var errorMessage: String?
@@ -50,7 +50,7 @@ struct FavoritesGameView: View {
     }
 }
 
-extension FavoritesGameView {
+extension FavoritesListView {
     private var loadedView: some View {
         ScrollView {
             LazyVStack {
@@ -69,7 +69,7 @@ extension FavoritesGameView {
     }
 }
 
-extension FavoritesGameView {
+extension FavoritesListView {
     private func getListGame() {
         let result = coreDataManager.fetchFavorites()
         switch result {
