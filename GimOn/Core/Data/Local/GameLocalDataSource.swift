@@ -14,6 +14,8 @@ protocol GameLocalDataSourceProtocol: AnyObject {
     func getGameDetail(for id: Int) -> AnyPublisher<GameDetailEntity, Error>
     func addGameList(_ games: [GameEntity]) -> AnyPublisher<Bool, Error>
     func addGame(_ game: GameDetailEntity) -> AnyPublisher<Bool, Error>
+    func getFavoriteList() -> AnyPublisher<[GameEntity], Error>
+    func updateFavorite(of id: Int) -> AnyPublisher<GameDetailEntity, Error>
 }
 
 final class GameLocalDataSource: NSObject {
@@ -96,6 +98,53 @@ extension GameLocalDataSource: GameLocalDataSourceProtocol {
                 }
             } else {
                 completion(.failure(DatabaseError.invalidInstance))
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func getFavoriteList() -> AnyPublisher<[GameEntity], any Error> {
+        return Future<[GameEntity], Error> { completion in
+            if let realm = self.realm {
+                
+                let favoriteEntity = {
+                    let sample = realm.objects(GameEntity.self)
+                        .filter("favorite == true")
+                    return sample
+                }()
+                
+                completion(.success(favoriteEntity.toArray(ofType: GameEntity.self)))
+            } else {
+                completion(.failure(DatabaseError.invalidInstance))
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func updateFavorite(of id: Int) -> AnyPublisher<GameDetailEntity, Error> {
+        return Future<GameDetailEntity, Error> { completion in
+            guard let realm = self.realm else {
+                completion(.failure(DatabaseError.invalidInstance))
+                return
+            }
+            
+            guard let gameDetailEntity = realm.object(ofType: GameDetailEntity.self, forPrimaryKey: id) else {
+                completion(.failure(DatabaseError.requestFailed))
+                return
+            }
+            
+            do {
+                try realm.write {
+                    gameDetailEntity.favorite.toggle()
+                    
+                    /// Sync GameEntity.favorite if exists
+                    if let gameListEntity = realm.object(ofType: GameEntity.self, forPrimaryKey: id) {
+                        gameListEntity.favorite = gameDetailEntity.favorite
+                    }
+                }
+                completion(.success(gameDetailEntity))
+            } catch {
+                completion(.failure(DatabaseError.requestFailed))
             }
         }
         .eraseToAnyPublisher()
