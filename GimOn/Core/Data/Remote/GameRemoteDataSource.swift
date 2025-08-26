@@ -6,6 +6,7 @@
 ////
 
 import Foundation
+import Alamofire
 
 protocol GameRemoteDataSourceProtocol {
     func getGameList(result: @escaping (Result<[GameResponse], Error>) -> Void)
@@ -19,42 +20,34 @@ final class GameRemoteDataSource: NSObject {
 
 extension GameRemoteDataSource: GameRemoteDataSourceProtocol {
     func getGameList(result: @escaping (Result<[GameResponse], Error>) -> Void) {
-        guard let url = URL(string: EndPoints.Gets.gameList.url) else { return }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            if error != nil {
-                result(.failure(NetworkError.addressUnreachable(url)))
-            } else if let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 {
-                let decoder = JSONDecoder()
-                
-                do {
-                    let response = try decoder.decode(GameListResponse.self, from: data)
-                    result(.success(response.games))
-                } catch {
-                    result(.failure(NetworkError.invalidResponse))
+        if let url = URL(string: EndPoints.Gets.gameList.url) {
+            AF
+                .request(url)
+                .validate()
+                .responseDecodable(of: GameListResponse.self) { response in
+                    switch response.result {
+                    case .success(let gameListResponse):
+                        result(.success(gameListResponse.games))
+                    case .failure:
+                        result(.failure(NetworkError.invalidResponse))
+                    }
                 }
-            }
         }
-        task.resume()
     }
     
     func getGameDetail(for id: Int, result: @escaping (Result<GameDetailResponse, Error>) -> Void) {
-        guard let url = URL(string: EndPoints.Gets.gameDetail(id: id).url) else { return }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            if error != nil {
-                result(.failure(NetworkError.addressUnreachable(url)))
-            } else if let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 {
-                let decoder = JSONDecoder()
-                
-                do {
-                    let response = try decoder.decode(GameDetailResponse.self, from: data)
-                    result(.success(response))
-                } catch {
-                    result(.failure(NetworkError.invalidResponse))
+        if let url = URL(string: EndPoints.Gets.gameDetail(id: id).url) {
+            AF
+                .request(url)
+                .validate()
+                .responseDecodable(of: GameDetailResponse.self) { response in
+                    switch response.result {
+                    case .success(let gameDetailResponse):
+                        result(.success(gameDetailResponse))
+                    case .failure:
+                        result(.failure(NetworkError.invalidResponse))
+                    }
                 }
-            }
         }
-        task.resume()
     }
 }
