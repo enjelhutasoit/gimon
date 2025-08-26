@@ -8,37 +8,6 @@
 import Foundation
 
 class NetworkService {
-    
-    let pageSize = "35"
-    
-    func getGames() async -> Result<[GameModel], NetworkError> {
-        if API.apiKey.isEmpty {
-            return .failure(.missingApiKey)
-        }
-
-        var components = URLComponents(string: "https://api.rawg.io/api/games")!
-        components.queryItems = [
-            URLQueryItem(name: "key", value: API.apiKey),
-            URLQueryItem(name: "page_size", value: pageSize)
-        ]
-        let request = URLRequest(url: components.url!)
-        
-        do {
-            let (data, response) = try await URLSession.shared.data(for: request)
-            
-            guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-                return .failure(.invalidResponse)
-            }
-            
-            let decoder = JSONDecoder()
-            let result = try decoder.decode(GameListResponse.self, from: data)
-            
-            return .success(gameMapper(input: result.games))
-        } catch {
-            return .failure(.networkFailure)
-        }
-    }
-    
     func getGame(id: Int) async -> Result<GameDetailModel, NetworkError> {
         if API.apiKey.isEmpty {
             return .failure(.missingApiKey)
@@ -60,26 +29,6 @@ class NetworkService {
             return .success(gameDetailMapper(input: result))
         } catch {
             return .failure(.networkFailure)
-        }
-    }
-}
-
-extension NetworkService {
-    fileprivate func gameMapper(
-        input gameResponses: [GameResponse]
-    ) -> [GameModel] {
-        return gameResponses.map { item in
-            return GameModel(
-                backgroundImage: URL(string: item.backgroundImage ?? "") ?? URL(string: "")!,
-                genres: item.genres?.compactMap { $0.name } ?? [],
-                id: item.id,
-                name: item.name ?? "-",
-                parentPlatfroms: item.parentPlatforms?.compactMap { $0.platform?.slug } ?? [],
-                playtime: item.playtime ?? 0,
-                rating: item.rating ?? 0,
-                ratingCount: item.ratingCount ?? 0,
-                released: item.released ?? "-"
-            )
         }
     }
 }
