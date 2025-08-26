@@ -13,6 +13,7 @@ class GameListPresenter: ObservableObject {
     @Published var gameList: [GameModel] = []
     @Published var errorMessage: String = ""
     @Published var isLoading: Bool = false
+    let router = GameListRouter()
     
     init(useCase: GameListUseCase) {
         self.useCase = useCase
@@ -41,7 +42,7 @@ class GameListPresenter: ObservableObject {
     
     func linkBuilder<Content: View>(for id: Int, @ViewBuilder content: () -> Content) -> some View {
         NavigationLink(
-            destination: GameDetailView(id: id)
+            destination: router.makeDetailView(for: id)
         ) {
             content()
         }
