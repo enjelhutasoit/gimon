@@ -68,11 +68,16 @@ extension GameListView {
         isLoading = true
         errorMessage = nil
         let networkService = NetworkService()
-        do {
-            self.games = try await networkService.getGames()
-        } catch {
-            errorMessage = "An unexpected error occurred. Please try again."
+        let result = await networkService.getGames()
+        
+        switch result {
+        case .success(let fetchesGames):
+            games = fetchesGames
+            errorMessage = nil
+        case .failure(let error):
+            errorMessage = error.description
         }
+        
         isLoading = false
     }
 }

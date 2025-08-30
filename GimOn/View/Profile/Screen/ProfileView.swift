@@ -8,31 +8,45 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @State private var openEditorView: Bool = false
+    
+    @AppStorage(ProfileStore.nameKey) var name = ProfileStore.shared.name
+    @AppStorage(ProfileStore.usernameKey) var username = ProfileStore.shared.username
+    @AppStorage(ProfileStore.bioKey) var bio = ProfileStore.shared.bio
+    
     var body: some View {
         ScrollView {
             VStack {
                 HStack(alignment: .center, spacing: 12) {
                     PhotoProfile(
-                        image: Image(User.photo),
+                        image: Image(DefaultUser.photo),
                         size: CGSize(width: 100, height: 100),
                         borderWidth: 3
                     )
                     
                     UserBioView(
-                        name: User.fullName,
-                        username: User.username,
-                        bio: User.bio
+                        name: name,
+                        username: username,
+                        bio: bio
                     )
                 }
                 
-                BorderedButton(User.web, fixedWidth: false) {
-                    openURLInBrowser(User.webURL)
+                HStack(alignment: .center, spacing: 12) {
+                    BorderedButton("Edit Profile", fixedWidth: false) {
+                        openEditorView.toggle()
+                    }
+                    
+                    BorderedButton(DefaultUser.web, fixedWidth: false) {
+                        openURLInBrowser(DefaultUser.webURL)
+                    }
                 }
-                .frame(maxWidth: .infinity)
                 .padding(.top)
             }
+            .padding(.horizontal)
         }
-        .padding(.horizontal)
+        .navigationDestination(isPresented: $openEditorView) {
+            EditProfileView()
+        }
         .background(.black)
     }
 }

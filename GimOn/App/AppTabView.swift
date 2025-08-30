@@ -19,10 +19,10 @@ struct AppTabView: View {
                 }
                 
                 NavigationStack {
-                    SearchView()
+                    FavoritesGameView()
                 }
                 .tabItem {
-                    Label("Search", systemImage: "magnifyingglass")
+                    Label("Favorite", systemImage: "heart")
                 }
                 
                 NavigationStack {
@@ -34,8 +34,6 @@ struct AppTabView: View {
                 }
             }
             .toolbarBackground(.black, for: .tabBar)
-            .toolbarBackground(.visible, for: .tabBar)
-            .toolbarColorScheme(.dark, for: .tabBar)
         }
     }
 }

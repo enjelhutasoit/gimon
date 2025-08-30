@@ -12,8 +12,11 @@ struct GameDetailView: View {
     @State private var errorMessage: String?
     @State private var game: GameDetail?
     @State private var isDescriptionExpanded: Bool = false
+    @State private var isFavorite: Bool = false
     @State private var isLoading: Bool = false
     @Environment(\.dismiss) private var dismiss
+    
+    @EnvironmentObject var coreDataManager: CoreDataManager
     
     init(id: Int) {
         self.id = id
@@ -40,7 +43,7 @@ struct GameDetailView: View {
         .toolbarBackground(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
+            ToolbarItem(placement: .topBarLeading) {
                 BackArrowButton { dismiss() }
             }
         }
@@ -54,71 +57,127 @@ extension GameDetailView {
     private func loadedView(geoProxy: GeometryProxy) -> some View {
         ScrollView {
             ZStack(alignment: .bottom) {
-                GamePosterDetailView(
-                    posterURL: game?.backgroundImage,
-                    height: geoProxy.size.height / 2,
-                    width: geoProxy.size.width
-                )
-                
-                GameHighlightView(
-                    title: game?.name ?? "",
-                    genres: game?.genres ?? [],
-                    rating: game?.rating ?? "",
-                    ratingCount: game?.ratingCount ?? ""
-                )
-                .padding(.bottom)
-                .padding(.horizontal)
+                posterView(geoProxy)
+                highlighView
             }
             
             VStack(alignment: .leading, spacing: 21) {
                 SharpEdgeDivider()
-                
-                GameMetadataView(
-                    esrb: game?.esrbRating ?? "",
-                    metacritic: "\(game?.metacritic ?? 0)",
-                    playtime: game?.playtime ?? "",
-                    released: game?.released ?? ""
-                )
-                
-                PlatformsDetailView(
-                    title: "PlatformView",
-                    platforms: game?.parentPlatforms ?? []
-                )
-                
-                DescriptionView(
-                    title: "Description",
-                    description: game?.description ?? "",
-                    isDescriptionExpanded: $isDescriptionExpanded
-                )
-                
-                StoreAndExploreMore(
-                    stores: game?.stores ?? [],
-                    website: game?.website,
-                    reddit: game?.redditURL,
-                    metacritic: game?.metacriticURL
-                )
-                
-                DevelopersAndAlternativeNamesView(
-                    developers: game?.developers ?? [],
-                    alternativeNames: game?.alternativeNames ?? []
-                )
-                
-                RowView("Tags", values: game?.tags ?? [])
+                favoriteButton
+                metaDataView
+                platformView
+                descriptionView
+                storeAndExploreMoreView
+                developersAndAlternativeNamesView
+                tagsView
             }
             .padding(.horizontal)
         }
     }
+    
+    private var favoriteButton: some View {
+        FavoriteButton(isSelected: $isFavorite) {
+            toggleFavorite()
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+    }
+    
+    private func posterView(_ geoProxy: GeometryProxy) -> some View {
+        GamePosterDetailView(
+            posterURL: game?.backgroundImage,
+            height: geoProxy.size.height / 2,
+            width: geoProxy.size.width
+        )
+    }
+    
+    private var highlighView: some View {
+        GameHighlightView(
+            title: game?.name ?? "",
+            genres: game?.genres ?? [],
+            rating: game?.rating ?? "",
+            ratingCount: game?.ratingCount ?? ""
+        )
+        .padding(.bottom)
+        .padding(.horizontal)
+    }
+
+    private var metaDataView: some View {
+        GameMetadataView(
+            esrb: game?.esrbRating ?? "",
+            metacritic: "\(game?.metacritic ?? 0)",
+            playtime: game?.playtime ?? "",
+            released: game?.released ?? ""
+        )
+    }
+    
+    private var platformView: some View {
+        PlatformsDetailView(
+            title: "Platforms",
+            platforms: game?.parentPlatforms ?? []
+        )
+    }
+    
+    private var descriptionView: some View {
+        DescriptionView(
+            title: "Description",
+            description: game?.description ?? "",
+            isDescriptionExpanded: $isDescriptionExpanded
+        )
+    }
+    
+    private var storeAndExploreMoreView: some View {
+        StoreAndExploreMore(
+            stores: game?.stores ?? [],
+            website: game?.website,
+            reddit: game?.redditURL,
+            metacritic: game?.metacriticURL
+        )
+    }
+    
+    private var developersAndAlternativeNamesView: some View {
+        DevelopersAndAlternativeNamesView(
+            developers: game?.developers ?? [],
+            alternativeNames: game?.alternativeNames ?? []
+        )
+    }
+    
+    private var tagsView: some View {
+        RowView("Tags", values: game?.tags ?? [])
+    }
+
 }
 
 extension GameDetailView {
     private func getDetail(id: Int) async {
         isLoading = true
-        let networkService = NetworkService()
-        do {
-            self.game = try await networkService.getGame(id: id)
-        } catch {
-            errorMessage = "An unexpected error occurred. Please try again."
+        defer { isLoading = false }
+        
+        let result = await NetworkService().getGame(id: id)
+        switch result {
+        case .success(let fetchedGame):
+            await MainActor.run {
+                self.game = fetchedGame
+                self.isFavorite = coreDataManager.favoriteGames.contains { $0.id == fetchedGame.id }
+                self.errorMessage = nil
+            }
+            
+        case .failure(let error):
+            await MainActor.run {
+                self.errorMessage = error.description
+            }
         }
-        isLoading = false
+    }
+    
+    private func toggleFavorite() {
+        if isFavorite {
+            if let game {
+                coreDataManager.removeFavorite(game)
+            }
+        } else {
+            if let game {
+                coreDataManager.addFavorite(game)
+            }
+        }
+        isFavorite.toggle()
     }
 }

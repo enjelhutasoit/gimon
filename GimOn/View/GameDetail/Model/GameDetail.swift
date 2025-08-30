@@ -8,35 +8,22 @@
 import Foundation
 
 struct GameDetail {
-    private let playtimeRaw: Int
-    private let ratingsCountRaw: Int
-    private let ratingRaw: Double
-    private let releasedRaw: String
     let alternativeNames: [String]
     let backgroundImage: URL?
     let description: String
     let developers: [String]
     let esrbRating: String
     let genres: [String]
+    let id: Int
     let metacritic: Int
     let metacriticURL: URL?
     let name: String
     let parentPlatforms: [PlatformModel]
-    var playtime: String { "\(playtimeRaw)h" }
-    var rating: String { String(format: "%.1f", ratingRaw) }
-    var ratingCount: String {
-        let num = Double(ratingsCountRaw)
-        switch num {
-        case 1_000_000...:
-            return String(format: "%.1fM", num / 1_000_000).replacingOccurrences(of: ".0", with: "")
-        case 1_000...:
-            return String(format: "%.1fk", num / 1_000).replacingOccurrences(of: ".0", with: "")
-        default:
-            return "\(ratingsCountRaw)"
-        }
-    }
+    var playtime: String
+    var rating: String
+    var ratingCount: String
     let redditURL: URL?
-    var released: String { formatYear(from: releasedRaw) }
+    var released: String
     let tags: [String]
     let website: URL?
     let stores: [StoreModel]?
@@ -48,6 +35,7 @@ struct GameDetail {
         developers: [String],
         esrbRating: String,
         genres: [String],
+        id: Int,
         metacritic: Int,
         metacriticURL: URL?,
         name: String,
@@ -67,32 +55,19 @@ struct GameDetail {
         self.developers = developers
         self.esrbRating = esrbRating
         self.genres = genres
+        self.id = id
         self.metacritic = metacritic
         self.metacriticURL = metacriticURL
         self.name = name
         self.parentPlatforms = parentPlatforms
-        self.playtimeRaw = playtime
-        self.ratingRaw = rating
-        self.ratingsCountRaw = ratingsCount
+        self.playtime = formatPlaytime(playtime)
+        self.rating = formatRating(rating)
+        self.ratingCount = formatRatingCount(ratingsCount)
         self.redditURL = redditURL
-        self.releasedRaw = released
+        self.released = formatYear(from: released, to: "dd MMM yyyy")
         self.stores = stores
         self.tags = tags
         self.website = website
-    }
-    
-    private func formatYear(from dateString: String) -> String {
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yyyy-MM-dd"
-        
-        guard let date = inputFormatter.date(from: dateString) else {
-            return ""
-        }
-        
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "dd MMM yyyy"
-        
-        return outputFormatter.string(from: date)
     }
 }
 

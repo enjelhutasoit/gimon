@@ -8,45 +8,74 @@
 import Foundation
 
 class NetworkService {
+    private let apiFileName = "RAWG-Info"
+    private let apiFileType = "plist"
+    private let apiKeyConfigKey = "API_KEY"
     
-    let apiKey = Constants.apiKey
+    private var apiKey: String {
+        guard let plist = NSDictionary(contentsOfFile: Bundle.main.path(forResource: apiFileName, ofType: apiFileType) ?? "") else {
+            fatalError("Couldn't find or load '\(apiFileName).\(apiFileType)'.")
+        }
+        
+        guard let value = plist[apiKeyConfigKey] as? String else {
+            fatalError("Missing '\(apiKeyConfigKey)' in '\(apiFileName).\(apiFileType)'.")
+        }
+        
+        return value
+    }
+    
     let pageSize = "35"
     
-    func getGames() async throws -> [Game] {
+    func getGames() async -> Result<[Game], NetworkError> {
+        if apiKey.isEmpty {
+            return .failure(.missingApiKey)
+        }
+
         var components = URLComponents(string: "https://api.rawg.io/api/games")!
         components.queryItems = [
             URLQueryItem(name: "key", value: apiKey),
             URLQueryItem(name: "page_size", value: pageSize)
-            
         ]
         let request = URLRequest(url: components.url!)
         
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-            fatalError("Error: Can't fetching data.")
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+                return .failure(.invalidResponse)
+            }
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(GameListResponse.self, from: data)
+            
+            return .success(gameMapper(input: result.games))
+        } catch {
+            return .failure(.networkFailure)
         }
-        
-        let decoder = JSONDecoder()
-        let result = try decoder.decode(GameListResponse.self, from: data)
-        
-        return gameMapper(input: result.games)
     }
     
-    func getGame(id: Int) async throws -> GameDetail {
+    func getGame(id: Int) async -> Result<GameDetail, NetworkError> {
+        if apiKey.isEmpty {
+            return .failure(.missingApiKey)
+        }
+        
         var components = URLComponents(string: "https://api.rawg.io/api/games/\(id)")!
         components.queryItems = [
             URLQueryItem(name: "key", value: apiKey)
         ]
         let request = URLRequest(url: components.url!)
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-            fatalError("Error: Can't fetching detail.")
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+                return .failure(.invalidResponse)
+            }
+            
+            let decoder = JSONDecoder()
+            let result = try decoder.decode(GameDetailResponse.self, from: data)
+            return .success(gameDetailMapper(input: result))
+        } catch {
+            return .failure(.networkFailure)
         }
-        
-        let decoder = JSONDecoder()
-        let result = try decoder.decode(GameDetailResponse.self, from: data)
-        return gameDetailMapper(input: result)
     }
 }
 
@@ -81,6 +110,7 @@ extension NetworkService {
             developers: input.developers?.compactMap { $0.name } ?? [],
             esrbRating: input.esrbRating.map { $0.name ?? "" } ?? "",
             genres: input.genres?.compactMap { $0.name } ?? [],
+            id: input.id,
             metacritic: input.metacritic ?? 0,
             metacriticURL: URL(string: input.metacriticURL ?? ""),
             name: input.name ?? "",

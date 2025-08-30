@@ -8,28 +8,14 @@
 import Foundation
 
 struct Game: Identifiable, Hashable {
-    private let playtimeRaw: Int
-    private let ratingCountRaw: Int
-    private let ratingRaw: Double
-    private let releasedRaw: String
     var id: Int
     let name: String
-    var released: String { formatYear(from: releasedRaw) }
+    var released: String
     let backgroundImage: URL
-    var rating: String { String(format: "%.1f", ratingRaw) }
-    var ratingCount: String {
-        let num = Double(ratingCountRaw)
-        switch num {
-        case 1_000_000...:
-            return String(format: "%.1fM", num / 1_000_000).replacingOccurrences(of: ".0", with: "")
-        case 1_000...:
-            return String(format: "%.1fk", num / 1_000).replacingOccurrences(of: ".0", with: "")
-        default:
-            return "\(ratingCountRaw)"
-        }
-    }
+    var rating: String
+    var ratingCount: String
     let parentPlatforms: [String]
-    var playtime: String { "\(playtimeRaw)h" }
+    var playtime: String
     let genres: [String]
     
     init(
@@ -48,23 +34,47 @@ struct Game: Identifiable, Hashable {
         self.id = id
         self.name = name
         self.parentPlatforms = parentPlatfroms
-        self.playtimeRaw = playtime
-        self.ratingRaw = rating
-        self.ratingCountRaw = ratingCount
-        self.releasedRaw = released
+        self.playtime = formatPlaytime(playtime)
+        self.rating = formatRating(rating)
+        self.ratingCount = formatRatingCount(ratingCount)
+        self.released = formatYear(from: released)
     }
-    
-    private func formatYear(from dateString: String) -> String {
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yyyy-MM-dd"
-        
-        guard let date = inputFormatter.date(from: dateString) else {
-            return ""
-        }
-        
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "yyyy"
-        
-        return outputFormatter.string(from: date)
+}
+
+extension Game {
+    init(
+        backgroundImage: URL,
+        genres: [String],
+        id: Int,
+        name: String,
+        parentPlatfroms: [String],
+        formattedPlaytime: String,
+        formattedRating: String,
+        formattedRatingCount: String,
+        formattedReleased: String
+    ) {
+        self.backgroundImage = backgroundImage
+        self.genres = genres
+        self.id = id
+        self.name = name
+        self.parentPlatforms = parentPlatfroms
+        self.playtime = formattedPlaytime
+        self.rating = formattedRating
+        self.ratingCount = formattedRatingCount
+        self.released = formattedReleased
+    }
+
+    init(from favorite: FavoriteGame) {
+        self.init(
+            backgroundImage: URL(string: favorite.backgroundImage ?? "") ?? URL(string: "")!,
+            genres: favorite.genres ?? [],
+            id: Int(favorite.id),
+            name: favorite.name ?? "",
+            parentPlatfroms: favorite.parentPlatforms ?? [],
+            formattedPlaytime: favorite.playtime ?? "",
+            formattedRating: favorite.rating ?? "",
+            formattedRatingCount: favorite.ratingCount ?? "",
+            formattedReleased: formatYear(from: favorite.released ?? "", inputDateFormat: "dd MMM yyy")
+        )
     }
 }
