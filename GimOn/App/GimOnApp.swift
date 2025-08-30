@@ -10,14 +10,26 @@ import SwiftUI
 @main
 struct GimOnApp: App {
     
-    @StateObject private var coreDataManager = CoreDataManager()
+    let gameListPresenter = GameListPresenter(
+        useCase: Injection.init().provideGameListUseCase()
+    )
+    
+    let favoritesListPresenter = FavoritesListPresenter(
+        useCase: Injection.init().provideFavoritesListUseCase()
+    )
+    
+    let profilePresenter = ProfilePresenter(
+        useCase: Injection.init().provideProfileUseCase()
+    )
 
     var body: some Scene {
         WindowGroup {
             AppTabView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .tint(AppColors.primaryColor)
-                .environmentObject(coreDataManager)
+                .environmentObject(gameListPresenter)
+                .environmentObject(favoritesListPresenter)
+                .environmentObject(profilePresenter)
         }
     }
 }

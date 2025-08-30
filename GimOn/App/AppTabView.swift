@@ -8,32 +8,41 @@
 import SwiftUI
 
 struct AppTabView: View {
+    
+    @EnvironmentObject var gameListPresenter: GameListPresenter
+    @EnvironmentObject var favoritesListPresenter: FavoritesListPresenter
+    @EnvironmentObject var profilePresenter: ProfilePresenter
+
     var body: some View {
         TabView {
             Group {
                 NavigationStack {
-                    GameListView()
+                    GameListView(presenter: gameListPresenter)
                 }
                 .tabItem {
-                    Label("Home", systemImage: "house.fill")
+                    Label("Games", systemImage: "gamecontroller")
                 }
                 
                 NavigationStack {
-                    FavoritesGameView()
+                    FavoriteListView(
+                        presenter: favoritesListPresenter
+                    )
                 }
                 .tabItem {
                     Label("Favorite", systemImage: "heart")
                 }
                 
                 NavigationStack {
-                    ProfileView()
+                    ProfileView(
+                        presenter: profilePresenter
+                    )
                 }
                 .tabItem {
                     Label("Profil", systemImage: "person.crop.circle.fill")
-                        .tint(AppColors.primaryColor)
                 }
             }
             .toolbarBackground(.black, for: .tabBar)
+            .preferredColorScheme(.dark)
         }
     }
 }
