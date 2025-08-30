@@ -11,7 +11,9 @@ import SwiftUI
 struct GimOnApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppTabView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .tint(AppColors.primaryColor)
         }
     }
 }
